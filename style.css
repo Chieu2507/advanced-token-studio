@@ -177,3 +177,44 @@
         var(--beae-btn-te-lbl-mix-target) calc(var(--beae-btn-te-lbl-tone-abs) * 1%)
     ) !important;
 }
+.toolbar-group{
+    background-color: white;
+    border: 1px solid;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: row;
+      border: none;
+        box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.4);  
+    .toolbar-btn{
+        border: none;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        border-right: 1px solid #ccc;
+    
+        &:last-child{
+            border: none;
+        }
+    }
+    
+}
+.toolbar-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg{
+        width: 16px;
+        height: 16px;
+        fill: #444444;
+        margin: 2px;
+    }
+}
+.global-btn,.json-btn{
+        padding: 4px;
+         border-radius: 6px;
+         background-color: white;
+    border: none;
+    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.4);
+    }
