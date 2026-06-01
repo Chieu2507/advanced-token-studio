@@ -1,0 +1,179 @@
+
+        :root {
+            --bg-body: #f5f5f4;
+            --border-color: #e5e5e5;
+            --text-main: #0a0a0a;
+            --text-muted: #737373;
+            --accent-blue: #2563eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { padding: 14px 20px; background: #ffffff; border-bottom: 1px solid var(--border-color); font-size: 13px; color: var(--text-muted); font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+        .version-badge { background: #f5f5f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; color: #171717; border: 1px solid #e5e5e5; }
+
+        .editor-container { display: flex; flex: 1; overflow: hidden; }
+
+        /* CỘT 1: THEME AXES */
+        .axis-panel { width: 240px; background: #ffffff; border-right: 1px solid var(--border-color); padding-top: 10px; }
+        .axis-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 20px; color: var(--text-muted); }
+        .axis-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; font-size: 14px; font-weight: 500; cursor: pointer; border-left: 3px solid transparent; user-select: none; color: #404040; }
+        .axis-item.active { background: #fafafa; border-left-color: #0a0a0a; color: #0a0a0a; font-weight: 600; }
+        .axis-count { font-size: 11px; background: #f5f5f5; padding: 2px 6px; border-radius: 10px; color: var(--text-muted); }
+
+        /* CỘT 2: CONFIGURATION PANEL */
+        .config-panel { width: 420px; background: #fcfcfc; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; }
+        .config-scroll-area { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Khu vực Header cố định của Cột 2 */
+        .dynamic-header-zone { padding: 20px 20px 15px 20px; border-bottom: 1px dashed var(--border-color); background: #fcfcfc; }
+        
+        /* Surfaces Overrides Selector (Chỉ hiện khi chọn trục Colors) */
+        #surface-selector-wrapper { display: block; }
+        .scheme-selector-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.03em; margin-bottom: 12px; }
+        .scheme-cards-grid { display: flex; gap: 10px; }
+        .scheme-visual-card { 
+            background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; 
+            padding: 10px; flex: 1; cursor: pointer; text-align: center; user-select: none;
+            transition: all 0.15s ease-in-out;
+        }
+        .scheme-visual-card.active { border-color: #0a0a0a; box-shadow: 0 0 0 1px #0a0a0a; }
+        .scheme-box-preview { 
+            height: 42px; border-radius: 6px; border: 1px solid #e5e5e5; margin-bottom: 6px; 
+            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; gap: 4px;
+        }
+        .scheme-label { font-size: 12px; font-weight: 600; color: #171717; }
+        .dot-group { display: flex; gap: 3px; margin-top: 2px; }
+        .dot { width: 10px; height: 5px; border-radius: 2px; }
+
+        /* Fonts Selector (Chỉ hiện khi chọn trục Typography) */
+        #font-selector-wrapper { display: none; }
+        .font-select-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.03em; margin-bottom: 12px; }
+        .font-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
+        .font-label { font-weight: 500; color: #404040; }
+        .font-dropdown { width: 180px; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 6px; background: #fff; color: #0a0a0a; }
+
+        /* Shared / Blueprint Headers cho các trục Value hình học */
+        .blueprint-header-wrapper { display: none; flex-direction: column; gap: 4px; }
+         #button-selector-wrapper .global-config-block{display: flex; flex-direction: column; gap: 10px; }
+        .blueprint-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+        /* Accordion & Token Fields */
+        .axis-content-section { display: none; }
+        .axis-content-section.active { display: block; }
+        .accordion { background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .accordion-header { padding: 12px 14px; background: #ffffff; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--border-color); user-select: none; }
+        .accordion-content { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+        /* Sub Variant Tabs */
+        .sub-variant-tabs { display: flex; background: #f1f1f0; padding: 3px; border-radius: 6px; margin-bottom: 16px; gap: 2px; }
+        .variant-tab { flex: 1; text-align: center; font-size: 12px; font-weight: 600; padding: 6px 0; border-radius: 4px; cursor: pointer; color: #737373; user-select: none; }
+        .variant-tab.active { background: #ffffff; color: #0a0a0a; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .variant-config-pane { display: none; flex-direction: column; gap: 12px; }
+        .variant-config-pane.active { display: flex; }
+
+        /* Typography Lists */
+        .typo-list-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: background 0.1s; }
+        .typo-meta-left { display: flex; flex-direction: column; gap: 4px; }
+        .typo-preview-text { font-weight: 600; color: #0a0a0a; }
+        .typo-sub-details { font-size: 12px; color: var(--text-muted); }
+
+        .token-group-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #a3a3a3; margin-top: 4px; margin-bottom: 2px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px;}
+        .token-field { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+        .token-label { width: 200px; font-weight: 500; color: #404040; font-family: monospace; font-size: 12px; }
+        .token-input-group { display: flex; align-items: center; gap: 6px; }
+        
+        .color-preview { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border-color); cursor: pointer; padding: 0; background: none; }
+        .hex-input { width: 72px; padding: 4px 6px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 4px; text-transform: uppercase; font-family: monospace; }
+        .number-input { width: 60px; padding: 4px 6px; font-size: 12px; border: 1px solid var(--border-color); border-radius: 4px; text-align: center; }
+        .select-input { padding: 4px 6px; font-size: 12px; border: 1px solid var(--border-color); border-radius: 4px; background: #fff; min-width: 80px; }
+        .text-input { width: 80px; padding: 4px 6px; font-size: 12px; border: 1px solid var(--border-color); border-radius: 4px; text-align: right; }
+
+        /* CỘT 3: LIVE PREVIEW CANVAS */
+        .preview-panel { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; background: #f5f5f4; }
+        .preview-title { font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+        .preview-canvas { flex: 1; border: 1px solid var(--border-color); border-radius: 12px; padding: 40px; display: flex; flex-direction: column; transition: all 0.2s ease; }
+
+        .demo-text h1 { font-size: 56px; margin-bottom: 10px; font-weight: 600; letter-spacing: -0.02em; }
+        .demo-text p { font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+        .demo-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; opacity: 0.6; }
+        .demo-block { margin-bottom: 35px; }
+        .demo-buttons { display: flex; gap: 12px; align-items: center; }
+        .btn-style { height: 44px; padding: 0 20px; border-radius: 4px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
+        .card-style { border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 16px; border: 1px solid transparent; transition: all 0.15s ease; }
+        .card-tag-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .badge-style { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid transparent; text-transform: uppercase; display: inline-block; }
+        .tag-style { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; border: 1px solid transparent; display: inline-block; }
+        
+        .demo-form-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .demo-input { width: 100%; padding: 10px 14px; border-radius: 4px; font-size: 14px; border: 1px solid var(--border-color); outline: none; box-sizing: border-box; }
+        .demo-select { width: 100%; padding: 10px 14px; border-radius: 4px; font-size: 14px; border: 1px solid var(--border-color); outline: none; background-position: right 10px center; box-sizing: border-box; }
+
+
+
+        /* --- CƠ CHẾ HOVER TOÁN HỌC PHÂN RÃ TOÀN BỘ SURFACE TOKENS --- */
+
+/* Primary Button & Pricing Card Primary Button */
+#p-btn, #pricing-primary-btn {
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+#p-btn:hover, #pricing-primary-btn:hover {
+    /* Mix Background */
+    background-color: color-mix(
+        in srgb, 
+        var(--beae-btn-pr-bg), 
+        var(--beae-btn-pr-bg-mix-target) calc(var(--beae-btn-pr-bg-tone-abs) * 1%)
+    ) !important;
+    /* Mix Label Text */
+    color: color-mix(
+        in srgb, 
+        var(--beae-btn-pr-lbl), 
+        var(--beae-btn-pr-lbl-mix-target) calc(var(--beae-btn-pr-lbl-tone-abs) * 1%)
+    ) !important;
+    /* Mix Outline Border */
+    border-color: color-mix(
+        in srgb, 
+        var(--beae-btn-pr-outline), 
+        var(--beae-btn-pr-outline-mix-target) calc(var(--beae-btn-pr-outline-tone-abs) * 1%)
+    ) !important;
+}
+
+/* Secondary Button */
+#s-btn {
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+#s-btn:hover {
+    /* Mix Background */
+    background-color: color-mix(
+        in srgb, 
+        var(--beae-btn-se-bg), 
+        var(--beae-btn-se-bg-mix-target) calc(var(--beae-btn-se-bg-tone-abs) * 1%)
+    ) !important;
+    /* Mix Label Text */
+    color: color-mix(
+        in srgb, 
+        var(--beae-btn-se-lbl), 
+        var(--beae-btn-se-lbl-mix-target) calc(var(--beae-btn-se-lbl-tone-abs) * 1%)
+    ) !important;
+    /* Mix Outline Border */
+    border-color: color-mix(
+        in srgb, 
+        var(--beae-btn-se-outline), 
+        var(--beae-btn-se-outline-mix-target) calc(var(--beae-btn-se-outline-tone-abs) * 1%)
+    ) !important;
+}
+
+/* Tertiary Button */
+#t-btn {
+    transition: color 0.15s ease;
+}
+#t-btn:hover {
+    /* Chỉ Mix Label Text */
+    color: color-mix(
+        in srgb, 
+        var(--beae-btn-te-lbl), 
+        var(--beae-btn-te-lbl-mix-target) calc(var(--beae-btn-te-lbl-tone-abs) * 1%)
+    ) !important;
+}

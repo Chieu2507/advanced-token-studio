@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omnise Design System - Advanced Token Studio</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div>Omnise Compiler Studio — <strong>Layer 1 Token Contract</strong></div>
+       <div class="header-actions" style="display: flex;gap: 20px;">
+            <button class="toolbar-btn" title="JSON">
+                <svg style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 8L4 12L8 16"/>
+                <path d="M16 8L20 12L16 16"/>
+                </svg>
+            </button>
+            <div class="toolbar-group">
+                <button class="toolbar-btn active" title="Desktop">
+                🖥️
+                </button>
+
+                <button class="toolbar-btn" title="Tablet">
+                💻
+                </button>
+
+                <button class="toolbar-btn" title="Mobile">
+                📱
+                </button>
+            </div>
+
+            <button class="toolbar-btn" title="Global Theme">
+                🌐
+            </button>
+        </div>
+    </header>
+    <div class="editor-container">
+        <div class="axis-panel" id="axisMenu">
+            <div class="axis-title">Theme Axes</div>
+            <div class="axis-item active" data-target="colors"><span>🎨 Colors</span><span class="axis-count">24</span></div>
+            <div class="axis-item" data-target="typography"><span>🔤 Typography</span><span class="axis-count">14</span></div>
+            <div class="axis-item" data-target="buttons"><span>🔘 Buttons</span><span class="axis-count">7</span></div>
+            <div class="axis-item" data-target="cards"><span>🔲 Cards </span><span class="axis-count">4</span></div>
+            <div class="axis-item" data-target="spacing"><span>📐 Spacing </span><span class="axis-count">1</span></div>
+            <div class="axis-item" data-target="form"><span>📝 Form </span><span class="axis-count">4</span></div>
+            <div class="axis-item" data-target="badge"><span>🏅 Badges</span><span class="axis-count">3</span></div>
+        </div>
+
+        <div class="config-panel">
+            <div class="dynamic-header-zone">
+                <div id="surface-selector-wrapper">
+                    <div class="scheme-selector-title">Theme Schemes</div>
+                    <div class="scheme-cards-grid">
+                        <div class="scheme-visual-card active" data-scheme="light">
+                            <div class="scheme-box-preview" style="background:#ffffff; color:#0a0a0a;">
+                                <span>Aa</span>
+                                <div class="dot-group">
+                                    <div class="dot" style="background:#0a0a0a"></div>
+                                    <div class="dot" style="background:#404040"></div>
+                                </div>
+                            </div>
+                            <div class="scheme-label">Default</div>
+                        </div>
+                        <div class="scheme-visual-card" data-scheme="dark">
+                            <div class="scheme-box-preview" style="background:#0a0a0a; color:#fafafa; border-color:#262626">
+                                <span>Aa</span>
+                                <div class="dot-group">
+                                    <div class="dot" style="background:#fafafa"></div>
+                                    <div class="dot" style="background:#a3a3a3"></div>
+                                </div>
+                            </div>
+                            <div class="scheme-label">Dark</div>
+                        </div>
+                        <div class="scheme-visual-card" data-scheme="accent">
+                            <div class="scheme-box-preview" style="background:#171717; color:#ffffff; border-color:#404040">
+                                <span>Aa</span>
+                                <div class="dot-group">
+                                    <div class="dot" style="background:#ffffff"></div>
+                                    <div class="dot" style="background:#d4d4d4"></div>
+                                </div>
+                            </div>
+                            <div class="scheme-label">Accent</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="font-selector-wrapper">
+                    <div class="font-select-title">Typography</div>
+                     <div class="font-row">
+                        <span class="font-label">Heading</span>
+                        <select class="font-dropdown" data-target-font="heading"><option>Inter</option><option>Figtree</option><option>Kaisei Decol</option></select>
+                    </div>
+                    <div class="font-row">
+                        <span class="font-label">Body</span>
+                        <select class="font-dropdown" data-target-font="body"><option>Inter</option><option>Figtree</option><option>Kaisei Decol</option></select>
+                    </div>
+                </div>
+
+                <div id="blueprint-buttons-header" class="blueprint-header-wrapper">
+                    <div id="button-selector-wrapper">
+                    <div class="global-config-block">
+                        <div class="scheme-selector-title" style="margin-bottom: 8px;">Button Shared Settings</div>
+                        <div class="token-field">
+                            <span class="token-label">Font size</span>
+                            <input type="number" class="number-input" id="btn-global-size" value="15">
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Letter spacing</span>
+                            <input type="text" class="text-input" id="btn-global-spacing" value="0em">
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Font weight</span>
+                            <select class="select-input" id="btn-global-weight">
+                                <option value="400">400 — Regular</option>
+                                <option value="500" selected>500 — Medium</option>
+                                <option value="600">600 — Semi Bold</option>
+                                <option value="700">700 — Bold</option>
+                            </select>
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Transform</span>
+                            <select class="select-input" id="btn-global-transform">
+                                <option value="none" selected>none</option>
+                                <option value="uppercase">UPPERCASE</option>
+                                <option value="lowercase">lowercase</option>
+                                <option value="capitalize">Capitalize</option>
+                            </select>
+                        </div>
+
+                        <div class="scheme-selector-title" style="margin-top: 10px; margin-bottom: 8px;">Primary & Secondary</div>
+                        <div class="token-field">
+                            <span class="token-label">Height</span>
+                            <input type="number" class="number-input" id="btn-geo-height" value="44">
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Padding X</span>
+                            <input type="number" class="number-input" id="btn-geo-padding" value="20">
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Border radius</span>
+                            <input type="number" class="number-input" id="btn-geo-radius" value="4">
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div id="blueprint-cards-header" class="blueprint-header-wrapper">
+                    <div class="scheme-selector-title">Card Layout & Geometry</div>
+                    <div class="blueprint-desc">Shared layout, spacing, and corner radius settings used across all card variants.</div>
+                </div>
+                <div id="blueprint-spacing-header" class="blueprint-header-wrapper">
+                    <div class="scheme-selector-title">Spacing Scale</div>
+                    <div class="blueprint-desc">Shared spacing values based on a 4px scale system (1 unit = 4px).</div>
+                </div>
+                <div id="blueprint-form-header" class="blueprint-header-wrapper">
+                    <div class="scheme-selector-title">Form Controls Layout</div>
+                    <div class="blueprint-desc">Shared size, spacing, and corner radius settings for form controls.</div>
+                </div>
+                <div id="blueprint-badge-header" class="blueprint-header-wrapper">
+                    <div class="scheme-selector-title">Badge Layout</div>
+                    <div class="blueprint-desc"> Controls padding, height, and corner radius used across all badge variants.</div>
+                </div>
+            </div>
+
+            <div class="config-scroll-area" id="dynamicFieldsContainer">
+                
+                <div class="axis-content-section active" id="axis-colors">
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Theme Colors</span></div>
+                        <div class="accordion-content">
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="background"><input type="text" class="hex-input" data-token="background"></div></div>
+                            <div class="token-field"><span class="token-label">Heading</span><div class="token-input-group"><input type="color" class="color-preview" data-token="headingText"><input type="text" class="hex-input" data-token="headingText"></div></div>
+                            <div class="token-field"><span class="token-label">Body text</span><div class="token-input-group"><input type="color" class="color-preview" data-token="bodyText"><input type="text" class="hex-input" data-token="bodyText"></div></div>
+                            <div class="token-field"><span class="token-label">Accent</span><div class="token-input-group"><input type="color" class="color-preview" data-token="accent"><input type="text" class="hex-input" data-token="accent"></div></div>
+                            <div class="token-field"><span class="token-label">Sale price</span><div class="token-input-group"><input type="color" class="color-preview" data-token="salePrice"><input type="text" class="hex-input" data-token="salePrice"></div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Button Colors</span></div>
+                        <div class="accordion-content">
+                            <div class="inner-status-tabs" style="display: flex; gap: 4px; margin-bottom: 16px; background: #e5e5e5; padding: 4px; border-radius: 6px; width: 100%;">
+                                <button type="button" class="sub-tab-btn active" data-state="normal" style="flex: 1; padding: 6px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; background: #ffffff; color: #0a0a0a;">Normal</button>
+                                <button type="button" class="sub-tab-btn" data-state="hover" style="flex: 1; padding: 6px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; background: transparent; color: #737373;">Hover</button>
+                            </div>
+                           <div class="button-state-pane" id="pane-btn-normal" style="display: flex; gap: 10px; flex-direction: column;">
+                            <div class="token-group-title">Primary Button</div>
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="primaryButton_background"><input type="text" class="hex-input" data-token="primaryButton_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="primaryButton_label"><input type="text" class="hex-input" data-token="primaryButton_label"></div></div>
+                            <div class="token-field"><span class="token-label">Outline</span><div class="token-input-group"><input type="color" class="color-preview" data-token="primaryButton_outline"><input type="text" class="hex-input" data-token="primaryButton_outline"></div></div>
+                            
+                            <div class="token-group-title">Secondary Button</div>
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="secondaryButton_background"><input type="text" class="hex-input" data-token="secondaryButton_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="secondaryButton_label"><input type="text" class="hex-input" data-token="secondaryButton_label"></div></div>
+                            <div class="token-field"><span class="token-label">Outline</span><div class="token-input-group"><input type="color" class="color-preview" data-token="secondaryButton_outline"><input type="text" class="hex-input" data-token="secondaryButton_outline"></div></div>
+                            
+                            <div class="token-group-title">Tertiary Button</div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tertiaryButton_label"><input type="text" class="hex-input" data-token="tertiaryButton_label"></div></div>
+                        </div>
+
+                        <div class="button-state-pane" id="pane-btn-hover" style="display: none; gap: 10px; flex-direction: column;">
+                            <div class="token-group-title">Primary Button Hover</div>
+                            <div class="token-field">
+                                <span class="token-label">Background Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="primaryButton_hover_background_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-primaryButton_hover_background_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                            <div class="token-field">
+                                <span class="token-label">Label Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="primaryButton_hover_label_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-primaryButton_hover_label_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                            <div class="token-field">
+                                <span class="token-label">Outline Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="primaryButton_hover_outline_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-primaryButton_hover_outline_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="token-group-title">Secondary Button Hover</div>
+                            <div class="token-field">
+                                <span class="token-label">Background Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="secondaryButton_hover_background_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-secondaryButton_hover_background_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                            <div class="token-field">
+                                <span class="token-label">Label Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="secondaryButton_hover_label_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-secondaryButton_hover_label_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                            <div class="token-field">
+                                <span class="token-label">Outline Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="secondaryButton_hover_outline_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-secondaryButton_hover_outline_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="token-group-title">Tertiary Button Hover</div>
+                            <div class="token-field">
+                                <span class="token-label">Label Tone</span>
+                                <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                    <input type="range" min="-100" max="100" class="tone-slider" data-token="tertiaryButton_hover_label_tone" style="flex: 1;">
+                                    <span class="tone-value-display" id="display-tertiaryButton_hover_label_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                   <div class="accordion">
+                    <div class="accordion-header"><span>▼ Card Colors</span></div>
+                    <div class="accordion-content">
+
+                        <div class="token-group-title">Featured Card</div>
+                        <div class="token-field">
+                            <span class="token-label">Background</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="featuredCard_background">
+                                <input type="text" class="hex-input" data-token="featuredCard_background">
+                            </div>
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Border Color</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="featuredCard_borderColor">
+                                <input type="text" class="hex-input" data-token="featuredCard_borderColor">
+                            </div>
+                        </div>
+
+                        <div class="token-group-title">Product Card</div>
+                        <div class="token-field">
+                            <span class="token-label">Background</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="productCard_background">
+                                <input type="text" class="hex-input" data-token="productCard_background">
+                            </div>
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Border Color</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="productCard_borderColor">
+                                <input type="text" class="hex-input" data-token="productCard_borderColor">
+                            </div>
+                        </div>
+
+                        <div class="token-group-title">Pricing Card</div>
+                        <div class="token-field">
+                            <span class="token-label">Background</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="pricingCard_background">
+                                <input type="text" class="hex-input" data-token="pricingCard_background">
+                            </div>
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Border Color</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="pricingCard_borderColor">
+                                <input type="text" class="hex-input" data-token="pricingCard_borderColor">
+                            </div>
+                        </div>
+
+                        <div class="token-group-title">CTA Card</div>
+                        <div class="token-field">
+                            <span class="token-label">Background</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="ctaCard_background">
+                                <input type="text" class="hex-input" data-token="ctaCard_background">
+                            </div>
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Border Color</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="ctaCard_borderColor">
+                                <input type="text" class="hex-input" data-token="ctaCard_borderColor">
+                            </div>
+                        </div>
+
+                        <div class="token-group-title">Media Card</div>
+                        <div class="token-field">
+                            <span class="token-label">Background</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="mediaCard_background">
+                                <input type="text" class="hex-input" data-token="mediaCard_background">
+                            </div>
+                        </div>
+                        <div class="token-field">
+                            <span class="token-label">Border Color</span>
+                            <div class="token-input-group">
+                                <input type="color" class="color-preview" data-token="mediaCard_borderColor">
+                                <input type="text" class="hex-input" data-token="mediaCard_borderColor">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Form Colors</span></div>
+                        <div class="accordion-content">
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="formInput_background"><input type="text" class="hex-input" data-token="formInput_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="formInput_color"><input type="text" class="hex-input" data-token="formInput_color"></div></div>
+                            <div class="token-field"><span class="token-label">Border color</span><div class="token-input-group"><input type="color" class="color-preview" data-token="formInput_borderColor"><input type="text" class="hex-input" data-token="formInput_borderColor"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Badge Colors</span></div>
+                        <div class="accordion-content">
+                            <div class="token-group-title">Sale Badge</div>
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="saleBadge_background"><input type="text" class="hex-input" data-token="saleBadge_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="saleBadge_text"><input type="text" class="hex-input" data-token="saleBadge_text"></div></div>
+                            
+                            <div class="token-group-title">Sold Out Badge</div>
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="soldOutBadge_background"><input type="text" class="hex-input" data-token="soldOutBadge_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="soldOutBadge_text"><input type="text" class="hex-input" data-token="soldOutBadge_text"></div></div>
+
+                            <div class="token-group-title">Tag 1</div>
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag1_background"><input type="text" class="hex-input" data-token="tag1_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag1_text"><input type="text" class="hex-input" data-token="tag1_text"></div></div>
+                            <div class="token-group-title">Tag 2</div>
+                            <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag2_background"><input type="text" class="hex-input" data-token="tag2_background"></div></div>
+                            <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag2_text"><input type="text" class="hex-input" data-token="tag2_text"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="axis-content-section" id="axis-typography">
+                    <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 20px;">Heading 1 (H1)</div>
+                            <div class="typo-sub-details" id="sub-h1">Inter, 56px, 600, Line: 1.1</div>
+                        </div>
+                    </div>
+                     <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 20px;">Heading 2 (H2)</div>
+                            <div class="typo-sub-details" id="sub-h1">Inter, 44px, 600, Line: 1.1</div>
+                        </div>
+                    </div>
+                     <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 20px;">Heading 3 (H3)</div>
+                            <div class="typo-sub-details" id="sub-h1">Inter, 32px, 600, Line: 1.1</div>
+                        </div>
+                    </div>
+                     <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 20px;">Heading 4 (H4)</div>
+                            <div class="typo-sub-details" id="sub-h1">Inter, 28px, 600, Line: 1.1</div>
+                        </div>
+                    </div>
+                     <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 20px;">Heading 5 (H5)</div>
+                            <div class="typo-sub-details" id="sub-h1">Inter, 24px, 600, Line: 1.1</div>
+                        </div>
+                    </div>
+                    <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 16px;">Body text (p)</div>
+                            <div class="typo-sub-details" id="sub-p">Inter, 18px, 400, Line: 1.5</div>
+                        </div>
+                    </div>
+                    <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 16px;">Body text 2 (p2)</div>
+                            <div class="typo-sub-details" id="sub-p">Inter, 16px, 400, Line: 1.5</div>
+                        </div>
+                    </div>
+                    <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 16px;">Body text 3 (p3)</div>
+                            <div class="typo-sub-details" id="sub-p">Inter, 14px, 400, Line: 1.5</div>
+                        </div>
+                    </div>
+                    <div class="typo-list-item">
+                        <div class="typo-meta-left">
+                            <div class="typo-preview-text" style="font-size: 16px;">Eyebrow (eyebrow)</div>
+                            <div class="typo-sub-details" id="sub-p">Inter, 12px, 400, Line: 1.5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="axis-content-section" id="axis-buttons">
+                    <div class="token-group-title" style="margin-bottom: 8px;">Button Variants</div>
+                    <div class="sub-variant-tabs">
+                        <div class="variant-tab active" data-variant="pr">Primary</div>
+                        <div class="variant-tab" data-variant="se">Secondary</div>
+                        <div class="variant-tab" data-variant="te">Tertiary</div>
+                    </div>
+                     <div class="variant-config-pane active" id="pane-pr">
+                        <div class="accordion">
+                            <div class="accordion-header"><span>▼ Primary</span></div>
+                            <div class="accordion-content">
+                                <div class="token-group-title">Border</div>
+                                <div class="token-field">
+                                    <span class="token-label">Thickness</span>
+                                    <input type="number" class="number-input" id="btn-pr-border" value="1" step="0.5">
+                                </div>
+                                <div class="token-group-title">Shadow</div>
+                                <div class="token-field">
+                                    <span class="token-label">Horizontal</span>
+                                    <input type="number" class="number-input" id="btn-pr-shadow-x" value="0">
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Vertical</span>
+                                    <input type="number" class="number-input" id="btn-pr-shadow-y" value="4.5" step="0.5">
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Blur</span>
+                                    <input type="number" class="number-input" id="btn-pr-shadow-blur" value="0">
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Transparent (0-1)</span>
+                                    <input type="number" class="number-input" id="btn-pr-shadow-opacity" value="0" min="0" max="1" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="variant-config-pane" id="pane-se">
+                        <div class="accordion">
+                            <div class="accordion-header"><span>▼ Secondary</span></div>
+                            <div class="accordion-content">
+                                <div class="token-group-title">Border Style</div>
+                                <div class="token-field">
+                                    <span class="token-label">Thickness</span>
+                                    <input type="number" class="number-input" id="btn-se-border" value="1" step="0.5">
+                                </div>
+                                <div class="token-group-title">Shadow</div>
+                                <div class="token-field">
+                                    <span class="token-label">Horizontal</span>
+                                    <input type="number" class="number-input" id="btn-se-shadow-x" value="0">
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Vertical</span>
+                                    <input type="number" class="number-input" id="btn-se-shadow-y" value="4.5" step="0.5">
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Blur</span>
+                                    <input type="number" class="number-input" id="btn-se-shadow-blur" value="0">
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Transparent (0-1)</span>
+                                    <input type="number" class="number-input" id="btn-se-shadow-opacity" value="0" min="0" max="1" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="variant-config-pane" id="pane-te">
+                        <div class="accordion">
+                            <div class="accordion-header"><span>▼ Tertiary</span></div>
+                            <div class="accordion-content">
+                                <div class="token-field">
+                                    <span class="token-label">Underline</span>
+                                    <select class="select-input" id="btn-te-underline">
+                                        <option value="none">none</option>
+                                        <option value="underline" selected>underline</option>
+                                    </select>
+                                </div>
+                                <div class="token-field">
+                                    <span class="token-label">Underline Offset (px)</span>
+                                    <input type="number" class="number-input" id="btn-te-offset" value="5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="axis-content-section" id="axis-cards">
+                    <div class="sub-variant-tabs">
+                        <div class="variant-tab active" data-variant="card-feat">Featured</div>
+                        <div class="variant-tab" data-variant="card-prod">Product</div>
+                        <div class="variant-tab" data-variant="card-pricing">Pricing</div>
+                        <div class="variant-tab" data-variant="card-cta">CTA</div>
+                        <div class="variant-tab" data-variant="card-media">Media</div>
+                    </div>
+
+                    <div class="variant-config-pane active" id="pane-card-feat">
+                        <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="card-feat-border" value="0"></div>
+                        <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="card-feat-radius" value="12"></div>
+                        <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="card-feat-padding" value="4"></div>
+                        <div class="token-field"><span class="token-label">Gap</span><input type="number" class="number-input" id="card-feat-gap" value="4"></div>
+                    </div>
+
+                    <div class="variant-config-pane" id="pane-card-prod">
+                        <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="card-prod-border" value="1"></div>
+                        <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="card-prod-radius" value="8"></div>
+                        <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="card-prod-padding" value="4"></div>
+                        <div class="token-field"><span class="token-label">Gap</span><input type="number" class="number-input" id="card-prod-gap" value="3"></div>
+                    </div>
+                    <div class="variant-config-pane" id="pane-card-pricing">
+                        <div class="token-field">
+                            <span class="token-label">Border width</span>
+                            <input type="number" class="number-input" id="card-pricing-border" value="1">
+                        </div>
+
+                        <div class="token-field">
+                            <span class="token-label">Border radius</span>
+                            <input type="number" class="number-input" id="card-pricing-radius" value="12">
+                        </div>
+
+                        <div class="token-field">
+                            <span class="token-label">Padding</span>
+                            <input type="number" class="number-input" id="card-pricing-padding" value="5">
+                        </div>
+
+                        <div class="token-field">
+                            <span class="token-label">Gap</span>
+                            <input type="number" class="number-input" id="card-pricing-gap" value="4">
+                        </div>
+                    </div>
+                    <div class="variant-config-pane" id="pane-card-cta">
+                        <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="card-cta-border" value="1"></div>
+                        <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="card-cta-radius" value="12"></div>
+                        <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="card-cta-padding" value="6"></div>
+                        <div class="token-field"><span class="token-label">Gap</span><input type="number" class="number-input" id="card-cta-gap" value="4"></div>
+                    </div>
+                    <div class="variant-config-pane" id="pane-card-media">
+                        <div class="token-field">
+                            <span class="token-label">Border width</span>
+                            <input type="number" class="number-input" id="card-media-border" value="1">
+                        </div>
+
+                        <div class="token-field">
+                            <span class="token-label">Border radius</span>
+                            <input type="number" class="number-input" id="card-media-radius" value="8">
+                        </div>
+
+                        <div class="token-field">
+                            <span class="token-label">Padding</span>
+                            <input type="number" class="number-input" id="card-media-padding" value="4">
+                        </div>
+
+                        <div class="token-field">
+                            <span class="token-label">Gap</span>
+                            <input type="number" class="number-input" id="card-media-gap" value="2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="axis-content-section" id="axis-spacing">
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Core Grid Layout Spacing</span></div>
+                        <div class="accordion-content">
+                           <div class="token-field">
+                                <span class="token-label">Grid gap</span>
+                                <input type="number" class="number-input" id="space-grid-gap-desk" value="6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="axis-content-section" id="axis-form">
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Input Layout & Geometry</span></div>
+                        <div class="accordion-content">
+                            <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="form-input-border" value="1"></div>
+                            <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="form-input-radius" value="4"></div>
+                            <div class="token-field"><span class="token-label">Padding X</span><input type="number" class="number-input" id="form-input-padding" value="4"></div>
+                            <div class="token-field"><span class="token-label">Height</span><input type="number" class="number-input" id="form-input-height" value="4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="axis-content-section" id="axis-badge">
+                    <div class="accordion">
+                        <div class="accordion-header"><span>▼ Badge Layout & Geometry</span></div>
+                        <div class="accordion-content">
+                            <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="badge-default-border" value="1"></div>
+                            <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="badge-default-radius" value="4"></div>
+                            <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="badge-default-padding" value="1"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-title">Live Preview Rendering Canvas</div>
+            <div class="preview-canvas" id="previewCanvas">
+                
+                <div class="demo-text">
+                    <h1 id="dyn-h1">Modern Minimal Studio</h1>
+                    <p id="dyn-p">This compiler resolves theme values dynamically. Modify tokens in column 2 or change surface perspectives at the top cards to watch instant style updates.</p>
+                </div>
+
+                <div class="demo-block">
+                    <div class="demo-section-title">Interactive Buttons</div>
+                    <div class="demo-buttons">
+                        <button class="btn-style" id="p-btn">Primary</button>
+                        <button class="btn-style" id="s-btn">Secondary</button>
+                        <button class="btn-style" id="t-btn" style="background:transparent; border:none; font-weight:600;">Tertiary →</button>
+                    </div>
+                </div>
+
+                <div class="demo-block">
+                    <div class="demo-section-title">Grid Render Layout</div>
+                    <div class="grid-cards" id="demo-grid">
+                        <div class="card-style" id="f-card">
+                            <div class="card-tag-row">
+                                <span class="badge-style" id="b-sale">Sale</span>
+                                <span class="tag-style" id="t1-badge">Tag Default</span>
+                            </div>
+                            <div style="font-weight:600; font-size:20px;" class="card-head-txt">Featured Card</div>
+                            <div style="font-size:14px;" class="card-body-txt">High visibility context wrapper block built for spotlight nodes.</div>
+                        </div>
+
+                        <div class="card-style" id="prod-card">
+                            <div class="card-tag-row">
+                                <span class="badge-style" id="b-sold">Sold out</span>
+                                <span class="tag-style" id="t2-badge">Tag Inverse</span>
+                            </div>
+                            <div style="font-weight:600; font-size:20px;" class="card-head-txt">Product Card</div>
+                            <div>
+                                <span style="font-weight:700; font-size:18px;" id="dyn-price">$49.00</span>
+                                <span style="font-weight:400; text-decoration: line-through; font-size:18px;" id="dyn-old-price">$79.00</span>
+                            </div>
+                            
+                        </div>
+                        <!-- Pricing -->
+                        <div class="card-style" id="pricing-card">
+                            <div class="card-head-txt" style="font-weight:600;font-size:20px;">
+                                Pricing Card
+                            </div>
+
+                            <div class="card-body-txt">
+                                Professional Plan
+                            </div>
+
+                            <div>
+                                <span style="font-size:32px;font-weight:700;" id="pricing-price">
+                                    $29
+                                </span>
+                                <span class="card-body-txt">
+                                    /month
+                                </span>
+                            </div>
+
+                            <button class="demo-btn primary-btn" id="pricing-primary-btn">
+                                Start Free Trial
+                            </button>
+                        </div>
+
+                        <div class="card-style" id="cta-card">
+                            <div style="font-weight:600; font-size:20px;" class="card-head-txt">CTA Card</div>
+                            <div class="demo-form-group">
+                                <input type="text" class="demo-input" id="demo-form-input" value="Your email address" readonly>
+                                <select class="demo-select" id="demo-form-select">
+                                    <option>Select your country</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Media -->
+                        <div class="card-style" id="media-card">
+                            <div id="demo-media" style="height: 140px; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background-color: #e5e5e5;">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; color: inherit;">
+                                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                                    <circle cx="9" cy="9" r="2"/>
+                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                                </svg>
+                                <span style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 4px; font-weight: 500;">02:45</span>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <div style="font-weight:600; font-size:20px;" class="card-head-txt">Media Card</div>
+                                <div style="font-size:14px;" class="card-body-txt">Image, video, gallery or rich visual content component container.</div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px;">
+                                <span class="card-body-txt" style="display: flex; align-items: center; gap: 4px;">
+                                    👁️ 1.2k views
+                                </span>
+                                <span class="card-body-txt" style="font-weight: 500; cursor: pointer;">
+                                    Read article →
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
