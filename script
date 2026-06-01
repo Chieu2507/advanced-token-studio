@@ -546,7 +546,7 @@ document.querySelectorAll(".variant-tab").forEach((tab) => {
 document.querySelectorAll(".number-input, .select-input, .text-input").forEach((input) => {
     input.addEventListener("input", applyGeometryTokens);
     input.addEventListener("change", applyGeometryTokens);
-});
+}); 
 
 // Thay đổi Font Chữ Global
 document.querySelectorAll(".font-dropdown").forEach((dropdown) => {
