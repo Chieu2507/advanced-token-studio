@@ -11,7 +11,7 @@
     <header>
         <div>Omnise Compiler Studio — <strong>Layer 1 Token Contract</strong></div>
        <div class="header-actions" style="display: flex;gap: 10px;">
-            <button class="toolbar-btn json-btn" title="JSON">
+            <button class="toolbar-btn json-btn" id="edit-toggle-btn" title="JSON">
                <svg  width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M10.221 2.956a.75.75 0 0 0-1.442-.412l-3 10.5a.75.75 0 0 0 1.442.412z"></path><path d="M5.03 4.22a.75.75 0 0 1 0 1.06l-2.72 2.72 2.72 2.72a.749.749 0 1 1-1.06 1.06l-3.25-3.25a.75.75 0 0 1 0-1.06l3.25-3.25a.75.75 0 0 1 1.06 0"></path><path d="M10.97 11.78a.75.75 0 0 1 0-1.06l2.72-2.72-2.72-2.72a.749.749 0 1 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0"></path></svg>
                 </svg>
             </button>
@@ -29,9 +29,6 @@
                 </button>
             </div>
 
-            <button class="toolbar-btn global-btn" id="theme-builder-btn" title="Global Theme">
-                Theme builder
-            </button>
         </div>
     </header>
     <div class="editor-container">
@@ -186,7 +183,7 @@
             <div class="config-panel-content">  
                 <div class="dynamic-header-zone">
                     <div id="surface-selector-wrapper">
-                        <div class="scheme-selector-title">Theme Schemes</div>
+                        <div class="scheme-selector-title">Surfaces</div>
                         <div class="scheme-cards-grid">
                             <div class="scheme-visual-card active" data-scheme="light">
                                 <div class="scheme-box-preview" style="background:#ffffff; color:#0a0a0a;">
@@ -763,7 +760,7 @@
             <div class="tb-axis-options-content">
                 <div class="dynamic-header-zone">
                     <div id="surface-selector-wrapper">
-                        <div class="scheme-selector-title">Theme Schemes</div>
+                        <div class="scheme-selector-title">Surfaces</div>
                         <div class="scheme-cards-grid">
                             <div class="scheme-visual-card active" data-scheme="light">
                                 <div class="scheme-box-preview" style="background:#ffffff; color:#0a0a0a;">
@@ -799,7 +796,7 @@
                     </div>
                 </div>
                 <div class="config-scroll-area">
-                    <div class="axis-content-section" id="dynamicPersonalityOptions">
+                    <div class="axis-content-select" id="dynamicPersonalityOptions">
                         <div class="accordion">
                             <div class="accordion-header"><span>▼ Personality Options
                                 </span>
@@ -817,7 +814,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="axis-content-section" id="dynamicAxisOptions">
+                    <div class="axis-content-select" id="dynamicAxisOptions">
                         <div class="accordion">
                             <div class="accordion-header"><span>▼ Axis Options
                             </span>

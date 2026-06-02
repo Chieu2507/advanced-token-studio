@@ -577,7 +577,7 @@ applyTokensToPreview();
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Khai báo / Lấy các phần tử DOM cần thiết từ file HTML
-  const themeBuilderBtn = document.getElementById("theme-builder-btn");
+  const themeBuilderBtn = document.getElementById("edit-toggle-btn");
   const axisMenuContent = document.querySelector(".axis-menu-content");
   const personalityMenuContent = document.querySelector(".theme-list-content");
   const configPanelContent = document.querySelector(".config-panel-content");
@@ -594,17 +594,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isThemeBuilderActive) {
           // --- TRẠNG THÁI: KÍCH HOẠT THEME BUILDER ---
           isThemeBuilderActive = true;
-          
-          // Chuyển chữ của nút thành Cancel
-          themeBuilderBtn.innerText = "Cancel";
           themeBuilderBtn.classList.add("cancel-btn");
           // Xử lý ẩn / hiện các panel theo yêu cầu
-          if (axisMenuContent) axisMenuContent.style.display = "none";
-          if (configPanelContent) configPanelContent.style.display = "none";
+          if (axisMenuContent) axisMenuContent.style.display = "block";
+          if (configPanelContent) configPanelContent.style.display = "block";
           
           if (personalityMenuContent) {
-              personalityMenuContent.style.display = "block"; // Hoặc "flex" tuỳ css của bạn
-              personalityMenuContent.classList.add("open");
+              personalityMenuContent.style.display = "none"; // Hoặc "flex" tuỳ css của bạn
+              personalityMenuContent.classList.remove("open");
           }
           if (tbAxisOptionsContent) {
               tbAxisOptionsContent.style.display = "block";
@@ -617,18 +614,17 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
           // --- TRẠNG THÁI: CLICK CANCEL (HỦY/QUAY LẠI) ---
           isThemeBuilderActive = false;
-          themeBuilderBtn.innerText = "Theme builder";
           themeBuilderBtn.classList.remove("cancel-btn");
           // Khôi phục lại hiển thị ban đầu cho các panel
-          if (axisMenuContent) axisMenuContent.style.display = "block";
-          if (configPanelContent) configPanelContent.style.display = "block";
+          if (axisMenuContent) axisMenuContent.style.display = "none";
+          if (configPanelContent) configPanelContent.style.display = "none";
           
           if (personalityMenuContent) {
-              personalityMenuContent.style.display = "none";
-              personalityMenuContent.classList.remove("open");
+              personalityMenuContent.style.display = "block";
+              personalityMenuContent.classList.add("open");
           }
           if (tbAxisOptionsContent) {
-              tbAxisOptionsContent.style.display = "none";
+              tbAxisOptionsContent.style.display = "";
               tbAxisOptionsContent.classList.remove("open");
           }
 
