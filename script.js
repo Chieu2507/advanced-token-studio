@@ -574,3 +574,124 @@ document.querySelectorAll(".accordion-header").forEach((h) => {
 // Khởi tạo studio ban đầu
 syncInputsFromState();
 applyTokensToPreview();
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Khai báo / Lấy các phần tử DOM cần thiết từ file HTML
+  const themeBuilderBtn = document.getElementById("theme-builder-btn");
+  const axisMenuContent = document.querySelector(".axis-menu-content");
+  const personalityMenuContent = document.querySelector(".theme-list-content");
+  const configPanelContent = document.querySelector(".config-panel-content");
+  const tbAxisOptionsContent = document.querySelector(".tb-axis-options-content");
+  
+  // Lưu trữ trạng thái xem người dùng có đang ở trong chế độ Theme Builder hay không
+  let isThemeBuilderActive = false;
+  let saveBtn = null; // Biến lưu trữ nút Save khi được tạo ra
+
+  if (!themeBuilderBtn) return;
+
+  // 2. Định nghĩa hàm xử lý khi click vào Theme Builder / Cancel
+  themeBuilderBtn.addEventListener("click", () => {
+      if (!isThemeBuilderActive) {
+          // --- TRẠNG THÁI: KÍCH HOẠT THEME BUILDER ---
+          isThemeBuilderActive = true;
+          
+          // Chuyển chữ của nút thành Cancel
+          themeBuilderBtn.innerText = "Cancel";
+          themeBuilderBtn.classList.add("cancel-btn");
+          // Xử lý ẩn / hiện các panel theo yêu cầu
+          if (axisMenuContent) axisMenuContent.style.display = "none";
+          if (configPanelContent) configPanelContent.style.display = "none";
+          
+          if (personalityMenuContent) {
+              personalityMenuContent.style.display = "block"; // Hoặc "flex" tuỳ css của bạn
+              personalityMenuContent.classList.add("open");
+          }
+          if (tbAxisOptionsContent) {
+              tbAxisOptionsContent.style.display = "block";
+              tbAxisOptionsContent.classList.add("open");
+          }
+
+          // Bắt đầu lắng nghe thay đổi trên personal (personality) hoặc palette
+          initChangeListeners();
+
+      } else {
+          // --- TRẠNG THÁI: CLICK CANCEL (HỦY/QUAY LẠI) ---
+          isThemeBuilderActive = false;
+          themeBuilderBtn.innerText = "Theme builder";
+          themeBuilderBtn.classList.remove("cancel-btn");
+          // Khôi phục lại hiển thị ban đầu cho các panel
+          if (axisMenuContent) axisMenuContent.style.display = "block";
+          if (configPanelContent) configPanelContent.style.display = "block";
+          
+          if (personalityMenuContent) {
+              personalityMenuContent.style.display = "none";
+              personalityMenuContent.classList.remove("open");
+          }
+          if (tbAxisOptionsContent) {
+              tbAxisOptionsContent.style.display = "none";
+              tbAxisOptionsContent.classList.remove("open");
+          }
+
+          // Xóa nút Save (nếu có) khi bấm Cancel
+          removeSaveButton();
+      }
+  });
+
+  // 3. Hàm tạo và hiển thị nút Save ngay bên trái nút Cancel
+  function showSaveButton() {
+      // Nếu nút Save đã tồn tại rồi thì không tạo thêm nữa
+      if (saveBtn) return;
+
+      saveBtn = document.createElement("button");
+      saveBtn.id = "tb-save-btn";
+      saveBtn.innerText = "Save";
+      
+      // Thêm class tương tự để đồng bộ giao diện style (ví dụ class của toolbar-btn)
+      saveBtn.className = "toolbar-btn save-btn"; 
+
+      // Chèn nút Save vào ngay trước (bên trái) nút Theme Builder (Cancel)
+      themeBuilderBtn.parentNode.insertBefore(saveBtn, themeBuilderBtn);
+
+      // Lắng nghe sự kiện click cho nút Save mới tạo
+      saveBtn.addEventListener("click", () => {
+          alert("Đã lưu cấu hình thành công!");
+          // Thêm logic lưu trữ state hoặc gửi API của bạn tại đây...
+          
+          // Sau khi lưu xong thì ẩn nút Save đi
+          removeSaveButton();
+      });
+  }
+
+  // Hàm xóa bỏ nút Save khỏi DOM
+  function removeSaveButton() {
+      if (saveBtn) {
+          saveBtn.remove();
+          saveBtn = null;
+      }
+  }
+
+  // 4. Hàm lắng nghe thay đổi từ Personal Items hoặc Palette
+  function initChangeListeners() {
+      // Lắng nghe click chọn các item trong Personality menu
+      const personalityItems = document.querySelectorAll(".personality-item");
+      personalityItems.forEach(item => {
+          item.addEventListener("click", handleUserChange);
+      });
+
+      // Tìm các phần tử palette (Ví dụ các bảng màu, input chọn màu, hoặc scheme-visual-card)
+      const paletteElements = document.querySelectorAll(".scheme-visual-card, input[type='color'], .hex-input");
+      paletteElements.forEach(el => {
+          // Lắng nghe cả click hoặc thay đổi giá trị input màu sắc
+          const eventType = el.tagName === "INPUT" ? "input" : "click";
+          el.addEventListener(eventType, handleUserChange);
+      });
+  }
+
+  // Hàm kích hoạt khi phát hiện user thay đổi cấu hình
+  function handleUserChange() {
+      // Chỉ xử lý hiển thị nút Save khi đang ở trong chế độ Theme Builder năng động
+      if (isThemeBuilderActive) {
+          showSaveButton();
+      }
+  }
+});

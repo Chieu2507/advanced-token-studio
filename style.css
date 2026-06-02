@@ -22,8 +22,9 @@
         .axis-count { font-size: 11px; background: #f5f5f5; padding: 2px 6px; border-radius: 10px; color: var(--text-muted); }
 
         /* CỘT 2: CONFIGURATION PANEL */
+        .config-panel-content{height: 100%;}
         .config-panel { width: 420px; background: #fcfcfc; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; }
-        .config-scroll-area { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .config-scroll-area { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px; height: 100%;}
         
         /* Khu vực Header cố định của Cột 2 */
         .dynamic-header-zone { padding: 20px 20px 15px 20px; border-bottom: 1px dashed var(--border-color); background: #fcfcfc; }
@@ -212,9 +213,165 @@
     }
 }
 .global-btn,.json-btn{
-        padding: 4px;
-         border-radius: 6px;
-         background-color: white;
+    padding: 4px;
+    border-radius: 6px;
+    background-color: white;
     border: none;
     box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.4);
+}
+.save-btn{
+    background-color: #0a0a0a;
+    color: white;
+    border: 1px solid #0a0a0a;
+    padding: 0 10px;
+    border-radius: 6px;
+}
+.global-btn{
+    background-color: #0a0a0a;
+    color: white;
+    border: 1px solid #0a0a0a;
+    padding: 0 10px;
+    &.cancel-btn{
+        background-color: white;
+        color: black;
     }
+    &:hover{
+        background-color: white;
+        color: #0a0a0a;
+        border: 1px solid #0a0a0a;
+    }
+}
+
+/* ═══════════════════════════════════════
+   THEME BUILDER — Col 1: Personality
+═══════════════════════════════════════ */
+.personality-menu-content {
+    padding: 10px 0;
+}
+.personality-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);        /* #a3a3a3 */
+    padding: 0 18px 10px;
+}
+.personality-item {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #525252;
+    cursor: pointer;
+    transition: color 0.1s;
+    user-select: none;
+    border-left: 3px solid transparent; /* giữ nguyên spacing khi active */
+}
+.personality-item:hover { color: #0a0a0a; }
+.personality-item.active {
+    color: #0a0a0a;
+    font-weight: 600;
+    border-left-color: #0a0a0a;
+}
+/* ẩn wrapper thừa, chỉ lấy text */
+.personality-item-title,
+.personality-item-title-text {
+    display: contents; /* pass-through, không tạo thêm box */
+}
+
+/* ═══════════════════════════════════════
+   THEME BUILDER — Col 2: Axis Options
+═══════════════════════════════════════ */
+.tb-axis-options-content {
+    display: flex;
+    flex-direction: column;
+}
+.tb-axis-item{
+    padding: 0 16px;
+}
+.tb-pills-wrap{
+    padding: 0 16px;
+}
+.tb-axis-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.tb-axis-row:last-child { border-bottom: none; }
+
+.tb-axis-label {
+    width: 88px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #171717;
+    padding-top: 5px;
+}
+
+.tb-pills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.tb-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1.5px solid #e5e5e5;
+    background: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    color: #525252;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+    font-family: 'Inter', system-ui, sans-serif;
+    user-select: none;
+}
+.tb-pill:hover  { border-color: #a3a3a3; color: #0a0a0a; }
+.tb-pill.active { background: #0a0a0a; color: #ffffff; border-color: #0a0a0a; }
+
+.theme-list-content{
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+    .theme-title{
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 10px 20px;
+        color: var(--text-muted);
+    }
+    .theme-item{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        cursor: pointer;
+        border-left: 3px solid transparent;
+        user-select: none;
+        color: #404040;
+        &.active{
+            background: #fafafa;
+            border-left-color: #0a0a0a;
+            color: #0a0a0a;
+        }
+    }
+    .theme-item-title-text{
+        border-left-color: #0a0a0a;
+        color: #0a0a0a;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .best-for{
+        font-size: 11px;
+        color: #525252;
+        line-height: 1.1;
+        margin-top: 5px;
+    }
+}
