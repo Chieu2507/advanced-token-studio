@@ -1,4 +1,6 @@
-// Full Theme State (Sparse Matrix Color Logic) - Bộ lưu trữ cấu trúc màu chuẩn hóa theo JSON kèm Hover Tone tách biệt
+// ==========================================
+// 1. GLOBAL STATE (Bộ lưu trữ cấu trúc màu chuẩn hóa kèm Hover Tone phân tách)
+// ==========================================
 const fullThemeState = {
   light: {
     background: "#ffffff",
@@ -34,7 +36,7 @@ const fullThemeState = {
     tag1_text: "#0a0a0a",
     tag2_background: "#0a0a0a",
     tag2_text: "#ffffff",
-    // Token Hover Tone phân tách độc lập (Âm pha white, Dương pha black)
+    // Hover Tone: Âm pha white, Dương pha black
     primaryButton_hover_background_tone: -15,
     primaryButton_hover_label_tone: 10,
     primaryButton_hover_outline_tone: -15,
@@ -77,7 +79,6 @@ const fullThemeState = {
     tag1_text: "#fafafa",
     tag2_background: "#fafafa",
     tag2_text: "#0a0a0a",
-    // Token Hover Tone phân tách độc lập cho Dark Mode
     primaryButton_hover_background_tone: 15,
     primaryButton_hover_label_tone: -10,
     primaryButton_hover_outline_tone: 15,
@@ -120,7 +121,6 @@ const fullThemeState = {
     tag1_text: "#ffffff",
     tag2_background: "#ffffff",
     tag2_text: "#171717",
-    // Token Hover Tone phân tách độc lập cho Accent Mode
     primaryButton_hover_background_tone: -10,
     primaryButton_hover_label_tone: 15,
     primaryButton_hover_outline_tone: -10,
@@ -132,8 +132,13 @@ const fullThemeState = {
 };
 
 let currentActiveScheme = "light";
+let isThemeBuilderActive = false;
+let saveBtn = null;
 
-// Thực thi ánh xạ toàn bộ Token màu sắc lên Live Canvas
+// ==========================================
+// 2. CORE RENDERING ENGINE (Ánh xạ Token & Hình học)
+// ==========================================
+
 function applyTokensToPreview() {
   const state = fullThemeState[currentActiveScheme];
   const canvas = document.getElementById("previewCanvas");
@@ -142,18 +147,23 @@ function applyTokensToPreview() {
 
   // 1. Core Background & Text
   canvas.style.backgroundColor = state.background;
-  document.getElementById("dyn-h1").style.color = state.headingText;
-  document.getElementById("dyn-p").style.color = state.bodyText;
-  document.querySelectorAll('.demo-section-title').forEach(el => {
+  
+  const dynH1 = document.getElementById("dyn-h1");
+  if (dynH1) dynH1.style.color = state.headingText;
+  
+  const dynP = document.getElementById("dyn-p");
+  if (dynP) dynP.style.color = state.bodyText;
+
+  document.querySelectorAll('.demo-section-title, .card-head-txt').forEach(el => {
     el.style.color = state.headingText;
   });
-  document
-    .querySelectorAll(".card-head-txt")
-    .forEach((el) => (el.style.color = state.headingText));
-  document
-    .querySelectorAll(".card-body-txt")
-    .forEach((el) => (el.style.color = state.bodyText));
-  document.getElementById("dyn-price").style.color = state.salePrice;
+  
+  document.querySelectorAll(".card-body-txt").forEach(el => {
+    el.style.color = state.bodyText;
+  });
+
+  const dynPrice = document.getElementById("dyn-price");
+  if (dynPrice) dynPrice.style.color = state.salePrice;
   
   const oldPrice = document.getElementById('dyn-old-price');
   if (oldPrice) {
@@ -161,7 +171,7 @@ function applyTokensToPreview() {
     oldPrice.style.opacity = '0.7';
   }
 
-  // 2. Button Mapped Surfaces (Trạng thái Normal)
+  // 2. Buttons Style Normal
   const pBtn = document.getElementById("p-btn");
   if (pBtn) {
     pBtn.style.backgroundColor = state.primaryButton_background;
@@ -188,9 +198,8 @@ function applyTokensToPreview() {
     tBtn.style.color = state.tertiaryButton_label;
   }
 
-  // --- BỔ SUNG: Đẩy nguyên liệu màu gốc và độ lệch tone toán học tách biệt từng thuộc tính sang CSS Variables ---
-  
-  // Primary Button Variables
+  // 3. Inject toán học Hover Tone vào CSS Variables trên Canvas
+  // Primary Button Hover CSS Variables
   canvas.style.setProperty('--beae-btn-pr-bg', state.primaryButton_background);
   canvas.style.setProperty('--beae-btn-pr-bg-mix-target', state.primaryButton_hover_background_tone < 0 ? 'white' : 'black');
   canvas.style.setProperty('--beae-btn-pr-bg-tone-abs', Math.abs(state.primaryButton_hover_background_tone));
@@ -203,7 +212,7 @@ function applyTokensToPreview() {
   canvas.style.setProperty('--beae-btn-pr-outline-mix-target', state.primaryButton_hover_outline_tone < 0 ? 'white' : 'black');
   canvas.style.setProperty('--beae-btn-pr-outline-tone-abs', Math.abs(state.primaryButton_hover_outline_tone));
 
-  // Secondary Button Variables
+  // Secondary Button Hover CSS Variables
   canvas.style.setProperty('--beae-btn-se-bg', state.secondaryButton_background);
   canvas.style.setProperty('--beae-btn-se-bg-mix-target', state.secondaryButton_hover_background_tone < 0 ? 'white' : 'black');
   canvas.style.setProperty('--beae-btn-se-bg-tone-abs', Math.abs(state.secondaryButton_hover_background_tone));
@@ -216,16 +225,23 @@ function applyTokensToPreview() {
   canvas.style.setProperty('--beae-btn-se-outline-mix-target', state.secondaryButton_hover_outline_tone < 0 ? 'white' : 'black');
   canvas.style.setProperty('--beae-btn-se-outline-tone-abs', Math.abs(state.secondaryButton_hover_outline_tone));
 
-  // Tertiary Button Variables (Chỉ có duy nhất Label)
+  // Tertiary Button Hover CSS Variables
   canvas.style.setProperty('--beae-btn-te-lbl', state.tertiaryButton_label);
   canvas.style.setProperty('--beae-btn-te-lbl-mix-target', state.tertiaryButton_hover_label_tone < 0 ? 'white' : 'black');
   canvas.style.setProperty('--beae-btn-te-lbl-tone-abs', Math.abs(state.tertiaryButton_hover_label_tone));
 
-  // 3. Card Elements Mapped Surfaces
-  document.getElementById("f-card").style.backgroundColor = state.featuredCard_background;
-  document.getElementById("f-card").style.borderColor = state.featuredCard_borderColor;
-  document.getElementById("prod-card").style.backgroundColor = state.productCard_background;
-  document.getElementById("prod-card").style.borderColor = state.productCard_borderColor;
+  // 4. Card Mapped Surfaces
+  const fCard = document.getElementById("f-card");
+  if (fCard) {
+    fCard.style.backgroundColor = state.featuredCard_background;
+    fCard.style.borderColor = state.featuredCard_borderColor;
+  }
+  
+  const prodCard = document.getElementById("prod-card");
+  if (prodCard) {
+    prodCard.style.backgroundColor = state.productCard_background;
+    prodCard.style.borderColor = state.productCard_borderColor;
+  }
   
   const pricingCard = document.getElementById("pricing-card");
   if (pricingCard) {
@@ -234,16 +250,21 @@ function applyTokensToPreview() {
   }
   
   const pricingPrice = document.getElementById("pricing-price");
-  if (pricingPrice) {
-    pricingPrice.style.color = state.salePrice;
+  if (pricingPrice) pricingPrice.style.color = state.salePrice;
+
+  const ctaCard = document.getElementById("cta-card");
+  if (ctaCard) {
+    ctaCard.style.backgroundColor = state.ctaCard_background;
+    ctaCard.style.borderColor = state.ctaCard_borderColor;
   }
 
-  document.getElementById("cta-card").style.backgroundColor = state.ctaCard_background;
-  document.getElementById("cta-card").style.borderColor = state.ctaCard_borderColor;
-  document.getElementById("media-card").style.backgroundColor = state.mediaCard_background; 
-  document.getElementById("media-card").style.borderColor = state.mediaCard_borderColor;
+  const mediaCard = document.getElementById("media-card");
+  if (mediaCard) {
+    mediaCard.style.backgroundColor = state.mediaCard_background; 
+    mediaCard.style.borderColor = state.mediaCard_borderColor;
+  }
 
-  // 4. Form Control Inputs Mapped Surfaces
+  // 5. Form Elements Mapped Surfaces
   const fInput = document.getElementById("demo-form-input");
   const fSelect = document.getElementById("demo-form-select");
   [fInput, fSelect].forEach((el) => {
@@ -254,23 +275,37 @@ function applyTokensToPreview() {
     }
   });
 
-  // 5. Badges & System Tags Mapped Surfaces
-  document.getElementById("b-sale").style.backgroundColor = state.saleBadge_background;
-  document.getElementById("b-sale").style.color = state.saleBadge_text;
-  document.getElementById("b-sold").style.backgroundColor = state.soldOutBadge_background;
-  document.getElementById("b-sold").style.color = state.soldOutBadge_text;
-  document.getElementById("t1-badge").style.backgroundColor = state.tag1_background;
-  document.getElementById("t1-badge").style.color = state.tag1_text;
-  document.getElementById("t2-badge").style.backgroundColor = state.tag2_background;
-  document.getElementById("t2-badge").style.color = state.tag2_text;
+  // 6. Badges & System Tags Mapped Surfaces
+  const bSale = document.getElementById("b-sale");
+  if (bSale) {
+    bSale.style.backgroundColor = state.saleBadge_background;
+    bSale.style.color = state.saleBadge_text;
+  }
+  const bSold = document.getElementById("b-sold");
+  if (bSold) {
+    bSold.style.backgroundColor = state.soldOutBadge_background;
+    bSold.style.color = state.soldOutBadge_text;
+  }
+  const t1Badge = document.getElementById("t1-badge");
+  if (t1Badge) {
+    t1Badge.style.backgroundColor = state.tag1_background;
+    t1Badge.style.color = state.tag1_text;
+  }
+  const t2Badge = document.getElementById("t2-badge");
+  if (t2Badge) {
+    t2Badge.style.backgroundColor = state.tag2_background;
+    t2Badge.style.color = state.tag2_text;
+  }
 
-  // Kéo theo cập nhật hình học
+  // Áp dụng luôn trục hình học hình khối
   applyGeometryTokens();
 }
 
-// Thực thi ánh xạ toàn bộ Trục Giá trị hình học lên Live Canvas
 function applyGeometryTokens() {
-  const fontSize = document.getElementById("btn-global-size").value + "px";
+  const sizeEl = document.getElementById("btn-global-size");
+  if (!sizeEl) return; // Bảo vệ nếu DOM chưa sẵn sàng hoàn toàn
+
+  const fontSize = sizeEl.value + "px";
   const letterSpacing = document.getElementById("btn-global-spacing").value;
   const fontWeight = document.getElementById("btn-global-weight").value;
   const height = document.getElementById("btn-geo-height").value + "px";
@@ -327,20 +362,27 @@ function applyGeometryTokens() {
     tBtn.style.textUnderlineOffset = teOffset;
   }
 
-  const gridGapUnits = document.getElementById("space-grid-gap-desk").value;
-  document.getElementById("demo-grid").style.gap = gridGapUnits * 4 + "px";
+  const demoGrid = document.getElementById("demo-grid");
+  if (demoGrid) {
+    const gridGapUnits = document.getElementById("space-grid-gap-desk").value;
+    demoGrid.style.gap = gridGapUnits * 4 + "px";
+  }
 
   const fCard = document.getElementById("f-card");
-  fCard.style.borderWidth = document.getElementById("card-feat-border").value + "px";
-  fCard.style.borderRadius = document.getElementById("card-feat-radius").value + "px";
-  fCard.style.padding = document.getElementById("card-feat-padding").value * 4 + "px";
-  fCard.style.gap = document.getElementById("card-feat-gap").value * 4 + "px";
+  if (fCard) {
+    fCard.style.borderWidth = document.getElementById("card-feat-border").value + "px";
+    fCard.style.borderRadius = document.getElementById("card-feat-radius").value + "px";
+    fCard.style.padding = document.getElementById("card-feat-padding").value * 4 + "px";
+    fCard.style.gap = document.getElementById("card-feat-gap").value * 4 + "px";
+  }
 
   const prodCard = document.getElementById("prod-card");
-  prodCard.style.borderWidth = document.getElementById("card-prod-border").value + "px";
-  prodCard.style.borderRadius = document.getElementById("card-prod-radius").value + "px";
-  prodCard.style.padding = document.getElementById("card-prod-padding").value * 4 + "px";
-  prodCard.style.gap = document.getElementById("card-prod-gap").value * 4 + "px";
+  if (prodCard) {
+    prodCard.style.borderWidth = document.getElementById("card-prod-border").value + "px";
+    prodCard.style.borderRadius = document.getElementById("card-prod-radius").value + "px";
+    prodCard.style.padding = document.getElementById("card-prod-padding").value * 4 + "px";
+    prodCard.style.gap = document.getElementById("card-prod-gap").value * 4 + "px";
+  }
 
   const pricingCard = document.getElementById("pricing-card");
   if (pricingCard) {
@@ -351,10 +393,12 @@ function applyGeometryTokens() {
   }
 
   const ctaCard = document.getElementById("cta-card");
-  ctaCard.style.borderWidth = document.getElementById("card-cta-border").value + "px";
-  ctaCard.style.borderRadius = document.getElementById("card-cta-radius").value + "px";
-  ctaCard.style.padding = document.getElementById("card-cta-padding").value * 4 + "px";
-  ctaCard.style.gap = document.getElementById("card-cta-gap").value * 4 + "px";
+  if (ctaCard) {
+    ctaCard.style.borderWidth = document.getElementById("card-cta-border").value + "px";
+    ctaCard.style.borderRadius = document.getElementById("card-cta-radius").value + "px";
+    ctaCard.style.padding = document.getElementById("card-cta-padding").value * 4 + "px";
+    ctaCard.style.gap = document.getElementById("card-cta-gap").value * 4 + "px";
+  }
 
   const mediaCard = document.getElementById("media-card");
   if (mediaCard) {
@@ -364,18 +408,20 @@ function applyGeometryTokens() {
     mediaCard.style.gap = document.getElementById("card-media-gap").value * 4 + "px";
   }
 
-  const formBorder = document.getElementById("form-input-border").value + "px";
-  const formRadius = document.getElementById("form-input-radius").value + "px";
-  const formPadding = document.getElementById("form-input-padding").value * 2 + "px";
-  const formHeight = document.getElementById("form-input-height").value * 12 + "px"; 
   const fInput = document.getElementById("demo-form-input");
   const fSelect = document.getElementById("demo-form-select");
-  [fInput, fSelect].forEach((el) => {
-    el.style.borderWidth = formBorder;
-    el.style.borderRadius = formRadius;
-    el.style.padding = formPadding;
-    el.style.height = formHeight;
-  });
+  if (fInput && fSelect) {
+    const formBorder = document.getElementById("form-input-border").value + "px";
+    const formRadius = document.getElementById("form-input-radius").value + "px";
+    const formPadding = document.getElementById("form-input-padding").value * 2 + "px";
+    const formHeight = document.getElementById("form-input-height").value * 12 + "px"; 
+    [fInput, fSelect].forEach((el) => {
+      el.style.borderWidth = formBorder;
+      el.style.borderRadius = formRadius;
+      el.style.padding = formPadding;
+      el.style.height = formHeight;
+    });
+  }
 
   const badgeBorder = document.getElementById("badge-default-border").value + "px";
   const badgeRadius = document.getElementById("badge-default-radius").value + "px";
@@ -387,7 +433,10 @@ function applyGeometryTokens() {
   });
 }
 
-// Đồng bộ ngược dữ liệu từ Scheme đang chọn vào các ô input màu & thanh trượt tone
+// ==========================================
+// 3. DATA SYNCHRONIZATION (Đồng bộ ngược State lên Inputs)
+// ==========================================
+
 function syncInputsFromState() {
   const state = fullThemeState[currentActiveScheme];
   Object.keys(state).forEach((tokenKey) => {
@@ -412,282 +461,265 @@ function syncInputsFromState() {
   });
 }
 
-// Xử lý Sự kiện kéo các thanh trượt Slider Hover Tone độc lập
-document.querySelectorAll(".tone-slider").forEach((slider) => {
-  slider.addEventListener("input", (e) => {
-    const token = e.target.getAttribute("data-token");
-    const val = parseInt(e.target.value);
-    
-    // Lưu vào bộ nhớ State theo Scheme hiện tại
-    fullThemeState[currentActiveScheme][token] = val;
-    
-    // Cập nhật số hiển thị kế bên thanh trượt
-    const displaySign = val > 0 ? "+" : "";
-    const displayEl = document.getElementById(`display-${token}`);
-    if (displayEl) displayEl.innerText = `${displaySign}${val}%`;
-    
-    // Re-render mượt mà ra Live Preview Canvas bằng CSS Variables
-    applyTokensToPreview();
-  });
-});
-
-// Xử lý Sự kiện click chuyển đổi Sub-Tab Normal / Hover của nhóm Button
-document.querySelectorAll(".sub-tab-btn").forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    const parentContainer = e.target.closest(".accordion-content");
-    
-    // Đổi màu active trên thanh tab nhỏ
-    parentContainer.querySelectorAll(".sub-tab-btn").forEach((b) => {
-        b.classList.remove("active");
-        b.style.background = "transparent";
-        b.style.color = "#737373";
-    });
-    btn.classList.add("active");
-    btn.style.background = "#ffffff";
-    btn.style.color = "#0a0a0a";
-    
-    // Tráo đổi vùng hiển thị điều khiển tương ứng
-    const stateType = btn.getAttribute("data-state");
-    const normalPane = parentContainer.querySelector("#pane-btn-normal");
-    const hoverPane = parentContainer.querySelector("#pane-btn-hover");
-    
-    if (stateType === "normal") {
-      normalPane.style.display = "flex";
-      hoverPane.style.display = "none";
-    } else {
-      normalPane.style.display = "none";
-      hoverPane.style.display = "flex";
-    }
-  });
-});
-
-// Xử lý Sự kiện đổi Surface Scheme (Light / Dark / Accent)
-document.querySelectorAll(".scheme-visual-card").forEach((card) => {
-  card.addEventListener("click", () => {
-    document.querySelectorAll(".scheme-visual-card").forEach((c) => c.classList.remove("active"));
-    card.classList.add("active");
-    currentActiveScheme = card.getAttribute("data-scheme");
-    syncInputsFromState();
-    applyTokensToPreview();
-  });
-});
-
-// Xử lý Sự kiện Thay đổi ô nhập Màu Sắc
-document.querySelectorAll(".color-preview").forEach((picker) => {
-  picker.addEventListener("input", (e) => {
-    const token = e.target.getAttribute("data-token");
-    const val = e.target.value;
-    document.querySelectorAll(`.hex-input[data-token="${token}"]`).forEach((t) => (t.value = val));
-    fullThemeState[currentActiveScheme][token] = val;
-    applyTokensToPreview();
-  });
-});
-document.querySelectorAll(".hex-input").forEach((input) => {
-  input.addEventListener("input", (e) => {
-    const token = e.target.getAttribute("data-token");
-    const val = e.target.value;
-    if (val.length === 7 && val.startsWith("#")) {
-      document.querySelectorAll(`.color-preview[data-token="${token}"]`).forEach((p) => (p.value = val));
-      fullThemeState[currentActiveScheme][token] = val;
-      applyTokensToPreview();
-    }
-  });
-});
-
-// ĐIỀU KHIỂN CHUYỂN TRỤC (AXIS SWITCHER)
-const axisItems = document.querySelectorAll("#axisMenu .axis-item");
-const contentSections = document.querySelectorAll(".axis-content-section");
-
-const conditionalHeaders = {
-  colors: document.getElementById("surface-selector-wrapper"),
-  typography: document.getElementById("font-selector-wrapper"),
-  buttons: document.getElementById("blueprint-buttons-header"),
-  cards: document.getElementById("blueprint-cards-header"),
-  spacing: document.getElementById("blueprint-spacing-header"),
-  form: document.getElementById("blueprint-form-header"),
-  badge: document.getElementById("blueprint-badge-header"),
-};
-
-axisItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    axisItems.forEach((i) => i.classList.remove("active"));
-    item.classList.add("active");
-
-    contentSections.forEach((s) => s.classList.remove("active"));
-    const targetAxis = item.getAttribute("data-target");
-    document.getElementById(`axis-${targetAxis}`).classList.add("active");
-
-    Object.keys(conditionalHeaders).forEach((key) => {
-      if (conditionalHeaders[key]) conditionalHeaders[key].style.display = "none";
-    });
-
-    if (conditionalHeaders[targetAxis]) {
-      conditionalHeaders[targetAxis].style.display =
-        targetAxis === "colors" || targetAxis === "typography" ? "block" : "flex";
-    }
-  });
-});
-
-// Xử lý chuyển Sub Variant Tabs trong các trục hình học
-document.querySelectorAll(".variant-tab").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    const parent = tab.parentElement;
-    parent.querySelectorAll(".variant-tab").forEach((t) => t.classList.remove("active"));
-    tab.classList.add("active");
-
-    const targetVariant = tab.getAttribute("data-variant");
-    const section = tab.closest(".axis-content-section");
-    section.querySelectorAll(".variant-config-pane").forEach((p) => p.classList.remove("active"));
-    section.querySelector(`#pane-${targetVariant}`).classList.add("active");
-  });
-});
-
-// Lắng nghe toàn bộ thay đổi thông số hình học để cập nhật Canvas thời gian thực
-document.querySelectorAll(".number-input, .select-input, .text-input").forEach((input) => {
-    input.addEventListener("input", applyGeometryTokens);
-    input.addEventListener("change", applyGeometryTokens);
-}); 
-
-// Thay đổi Font Chữ Global
-document.querySelectorAll(".font-dropdown").forEach((dropdown) => {
-  dropdown.addEventListener("change", (e) => {
-    const targetFont = e.target.getAttribute("data-target-font");
-    const selectedFont = e.target.value;
-    if (targetFont === "heading") {
-      document.getElementById("dyn-h1").style.fontFamily = selectedFont;
-      document.getElementById("sub-h1").innerText = `${selectedFont}, 56px, 600, Line: 1.1`;
-    } else if (targetFont === "body") {
-      document.getElementById("dyn-p").style.fontFamily = selectedFont;
-      document.getElementById("sub-p").innerText = `${selectedFont}, 18px, 400, Line: 1.6`;
-    }
-  });
-});
-
-// Accordion toggle đóng/mở danh mục
-document.querySelectorAll(".accordion-header").forEach((h) => {
-  h.addEventListener("click", () => {
-    const content = h.nextElementSibling;
-    content.style.display = content.style.display === "none" || content.style.display === "" ? "flex" : "none";
-  });
-});
-
-// Khởi tạo studio ban đầu
-syncInputsFromState();
-applyTokensToPreview();
+// ==========================================
+// 4. EVENT CONTROLLERS & INTERACTION SYSTEM
+// ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Khai báo / Lấy các phần tử DOM cần thiết từ file HTML
   const themeBuilderBtn = document.getElementById("edit-toggle-btn");
   const axisMenuContent = document.querySelector(".axis-menu-content");
   const personalityMenuContent = document.querySelector(".theme-list-content");
   const configPanelContent = document.querySelector(".config-panel-content");
   const tbAxisOptionsContent = document.querySelector(".tb-axis-options-content");
-  
-  // Lưu trữ trạng thái xem người dùng có đang ở trong chế độ Theme Builder hay không
-  let isThemeBuilderActive = false;
-  let saveBtn = null; // Biến lưu trữ nút Save khi được tạo ra
 
-  if (!themeBuilderBtn) return;
+  // Khởi tạo trạng thái ban đầu của Preview Canvas
+  syncInputsFromState();
+  applyTokensToPreview();
 
-  // 2. Định nghĩa hàm xử lý khi click vào Theme Builder / Cancel
-  themeBuilderBtn.addEventListener("click", () => {
+  // --- TRỤC ĐIỀU KHIỂN BUILDER PANEL (ON / OFF) ---
+  if (themeBuilderBtn) {
+    themeBuilderBtn.addEventListener("click", () => {
       if (!isThemeBuilderActive) {
-          // --- TRẠNG THÁI: KÍCH HOẠT THEME BUILDER ---
-          isThemeBuilderActive = true;
-          themeBuilderBtn.classList.add("cancel-btn");
-          // Xử lý ẩn / hiện các panel theo yêu cầu
-          if (axisMenuContent) axisMenuContent.style.display = "block";
-          if (configPanelContent) configPanelContent.style.display = "block";
-          
-          if (personalityMenuContent) {
-              personalityMenuContent.style.display = "none"; // Hoặc "flex" tuỳ css của bạn
-              personalityMenuContent.classList.remove("open");
-          }
-          if (tbAxisOptionsContent) {
-              tbAxisOptionsContent.style.display = "block";
-              tbAxisOptionsContent.classList.add("open");
-          }
-
-          // Bắt đầu lắng nghe thay đổi trên personal (personality) hoặc palette
-          initChangeListeners();
-
+        isThemeBuilderActive = true;
+        themeBuilderBtn.classList.add("cancel-btn");
+        
+        if (axisMenuContent) axisMenuContent.style.display = "block";
+        if (configPanelContent) configPanelContent.style.display = "block";
+        if (personalityMenuContent) {
+          personalityMenuContent.style.display = "none";
+          personalityMenuContent.classList.remove("open");
+        }
+        if (tbAxisOptionsContent) {
+          tbAxisOptionsContent.style.display = "block";
+          tbAxisOptionsContent.classList.add("open");
+        }
+        initChangeListeners();
       } else {
-          // --- TRẠNG THÁI: CLICK CANCEL (HỦY/QUAY LẠI) ---
-          isThemeBuilderActive = false;
-          themeBuilderBtn.classList.remove("cancel-btn");
-          // Khôi phục lại hiển thị ban đầu cho các panel
-          if (axisMenuContent) axisMenuContent.style.display = "none";
-          if (configPanelContent) configPanelContent.style.display = "none";
-          
-          if (personalityMenuContent) {
-              personalityMenuContent.style.display = "block";
-              personalityMenuContent.classList.add("open");
-          }
-          if (tbAxisOptionsContent) {
-              tbAxisOptionsContent.style.display = "";
-              tbAxisOptionsContent.classList.remove("open");
-          }
-
-          // Xóa nút Save (nếu có) khi bấm Cancel
-          removeSaveButton();
+        isThemeBuilderActive = false;
+        themeBuilderBtn.classList.remove("cancel-btn");
+        
+        if (axisMenuContent) axisMenuContent.style.display = "none";
+        if (configPanelContent) configPanelContent.style.display = "none";
+        if (personalityMenuContent) {
+          personalityMenuContent.style.display = "block";
+          personalityMenuContent.classList.add("open");
+        }
+        if (tbAxisOptionsContent) {
+          tbAxisOptionsContent.style.display = "";
+          tbAxisOptionsContent.classList.remove("open");
+        }
+        removeSaveButton();
       }
+    });
+  }
+
+  // --- QUAN SÁT SỰ THAY ĐỔI ĐỂ TẠO NÚT SAVE BIÊN TẬP ---
+  function showSaveButton() {
+    if (saveBtn || !themeBuilderBtn) return;
+
+    saveBtn = document.createElement("button");
+    saveBtn.id = "tb-save-btn";
+    saveBtn.innerText = "Save";
+    saveBtn.className = "toolbar-btn save-btn"; 
+
+    themeBuilderBtn.parentNode.insertBefore(saveBtn, themeBuilderBtn);
+
+    saveBtn.addEventListener("click", () => {
+      alert("Đã lưu cấu hình thành công!");
+      removeSaveButton();
+    });
+  }
+
+  function removeSaveButton() {
+    if (saveBtn) {
+      saveBtn.remove();
+      saveBtn = null;
+    }
+  }
+
+  function initChangeListeners() {
+    document.querySelectorAll(".personality-item").forEach(item => {
+      item.removeEventListener("click", handleUserChange);
+      item.addEventListener("click", handleUserChange);
+    });
+
+    document.querySelectorAll(".scheme-visual-card, input[type='color'], .hex-input, .tone-slider").forEach(el => {
+      const eventType = el.tagName === "INPUT" ? "input" : "click";
+      el.removeEventListener(eventType, handleUserChange);
+      el.addEventListener(eventType, handleUserChange);
+    });
+  }
+
+  function handleUserChange() {
+    if (isThemeBuilderActive) {
+      showSaveButton();
+    }
+  }
+
+  // --- EVENT: THANH TRƯỢT HOVER TONE SLIDERS ---
+  document.querySelectorAll(".tone-slider").forEach((slider) => {
+    slider.addEventListener("input", (e) => {
+      const token = e.target.getAttribute("data-token");
+      const val = parseInt(e.target.value);
+      
+      fullThemeState[currentActiveScheme][token] = val;
+      
+      const displaySign = val > 0 ? "+" : "";
+      const displayEl = document.getElementById(`display-${token}`);
+      if (displayEl) displayEl.innerText = `${displaySign}${val}%`;
+      
+      applyTokensToPreview();
+    });
   });
 
-  // 3. Hàm tạo và hiển thị nút Save ngay bên trái nút Cancel
-  function showSaveButton() {
-      // Nếu nút Save đã tồn tại rồi thì không tạo thêm nữa
-      if (saveBtn) return;
-
-      saveBtn = document.createElement("button");
-      saveBtn.id = "tb-save-btn";
-      saveBtn.innerText = "Save";
+  // --- EVENT: CHUYỂN SUB-TAB NORMAL / HOVER CHO BUTTONS ---
+  document.querySelectorAll(".sub-tab-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const parentContainer = e.target.closest(".accordion-content");
+      if (!parentContainer) return;
       
-      // Thêm class tương tự để đồng bộ giao diện style (ví dụ class của toolbar-btn)
-      saveBtn.className = "toolbar-btn save-btn"; 
-
-      // Chèn nút Save vào ngay trước (bên trái) nút Theme Builder (Cancel)
-      themeBuilderBtn.parentNode.insertBefore(saveBtn, themeBuilderBtn);
-
-      // Lắng nghe sự kiện click cho nút Save mới tạo
-      saveBtn.addEventListener("click", () => {
-          alert("Đã lưu cấu hình thành công!");
-          // Thêm logic lưu trữ state hoặc gửi API của bạn tại đây...
-          
-          // Sau khi lưu xong thì ẩn nút Save đi
-          removeSaveButton();
+      parentContainer.querySelectorAll(".sub-tab-btn").forEach((b) => {
+          b.classList.remove("active");
+          b.style.background = "transparent";
+          b.style.color = "#737373";
       });
-  }
-
-  // Hàm xóa bỏ nút Save khỏi DOM
-  function removeSaveButton() {
-      if (saveBtn) {
-          saveBtn.remove();
-          saveBtn = null;
+      btn.classList.add("active");
+      btn.style.background = "#ffffff";
+      btn.style.color = "#0a0a0a";
+      
+      const stateType = btn.getAttribute("data-state");
+      const normalPane = parentContainer.querySelector("#pane-btn-normal");
+      const hoverPane = parentContainer.querySelector("#pane-btn-hover");
+      
+      if (normalPane && hoverPane) {
+        if (stateType === "normal") {
+          normalPane.style.display = "flex";
+          hoverPane.style.display = "none";
+        } else {
+          normalPane.style.display = "none";
+          hoverPane.style.display = "flex";
+        }
       }
-  }
+    });
+  });
 
-  // 4. Hàm lắng nghe thay đổi từ Personal Items hoặc Palette
-  function initChangeListeners() {
-      // Lắng nghe click chọn các item trong Personality menu
-      const personalityItems = document.querySelectorAll(".personality-item");
-      personalityItems.forEach(item => {
-          item.addEventListener("click", handleUserChange);
-      });
+  // --- EVENT: ĐỔI TRẠNG THÁI SURFACE SCHEME (LIGHT / DARK / ACCENT) ---
+  document.querySelectorAll(".scheme-visual-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      document.querySelectorAll(".scheme-visual-card").forEach((c) => c.classList.remove("active"));
+      card.classList.add("active");
+      currentActiveScheme = card.getAttribute("data-scheme");
+      syncInputsFromState();
+      applyTokensToPreview();
+    });
+  });
 
-      // Tìm các phần tử palette (Ví dụ các bảng màu, input chọn màu, hoặc scheme-visual-card)
-      const paletteElements = document.querySelectorAll(".scheme-visual-card, input[type='color'], .hex-input");
-      paletteElements.forEach(el => {
-          // Lắng nghe cả click hoặc thay đổi giá trị input màu sắc
-          const eventType = el.tagName === "INPUT" ? "input" : "click";
-          el.addEventListener(eventType, handleUserChange);
-      });
-  }
+  // --- EVENT: CHỈNH SỬA Ô NHẬP MÀU SẮC (HEX VÀ COLOR PICKER) ---
+  document.querySelectorAll(".color-preview").forEach((picker) => {
+    picker.addEventListener("input", (e) => {
+      const token = e.target.getAttribute("data-token");
+      const val = e.target.value;
+      document.querySelectorAll(`.hex-input[data-token="${token}"]`).forEach((t) => (t.value = val));
+      fullThemeState[currentActiveScheme][token] = val;
+      applyTokensToPreview();
+    });
+  });
 
-  // Hàm kích hoạt khi phát hiện user thay đổi cấu hình
-  function handleUserChange() {
-      // Chỉ xử lý hiển thị nút Save khi đang ở trong chế độ Theme Builder năng động
-      if (isThemeBuilderActive) {
-          showSaveButton();
+  document.querySelectorAll(".hex-input").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      const token = e.target.getAttribute("data-token");
+      const val = e.target.value;
+      if (val.length === 7 && val.startsWith("#")) {
+        document.querySelectorAll(`.color-preview[data-token="${token}"]`).forEach((p) => (p.value = val));
+        fullThemeState[currentActiveScheme][token] = val;
+        applyTokensToPreview();
       }
-  }
+    });
+  });
+
+  // --- EVENT: ĐIỀU KHIỂN CHUYỂN TRỤC CHỨC NĂNG (AXIS SWITCHER) ---
+  const axisItems = document.querySelectorAll("#axisMenu .axis-item");
+  const contentSections = document.querySelectorAll(".axis-content-section");
+  const conditionalHeaders = {
+    colors: document.getElementById("surface-selector-wrapper"),
+    typography: document.getElementById("font-selector-wrapper"),
+    buttons: document.getElementById("blueprint-buttons-header"),
+    cards: document.getElementById("blueprint-cards-header"),
+    spacing: document.getElementById("blueprint-spacing-header"),
+    form: document.getElementById("blueprint-form-header"),
+    badge: document.getElementById("blueprint-badge-header"),
+  };
+
+  axisItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      axisItems.forEach((i) => i.classList.remove("active"));
+      item.classList.add("active");
+
+      contentSections.forEach((s) => s.classList.remove("active"));
+      const targetAxis = item.getAttribute("data-target");
+      const targetSection = document.getElementById(`axis-${targetAxis}`);
+      if (targetSection) targetSection.classList.add("active");
+
+      Object.keys(conditionalHeaders).forEach((key) => {
+        if (conditionalHeaders[key]) conditionalHeaders[key].style.display = "none";
+      });
+
+      if (conditionalHeaders[targetAxis]) {
+        conditionalHeaders[targetAxis].style.display =
+          targetAxis === "colors" || targetAxis === "typography" ? "block" : "flex";
+      }
+    });
+  });
+
+  // --- EVENT: CHUYỂN SUB VARIANT TABS TRONG CÁC TRỤC HÌNH HỌC ---
+  document.querySelectorAll(".variant-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const parent = tab.parentElement;
+      parent.querySelectorAll(".variant-tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const targetVariant = tab.getAttribute("data-variant");
+      const section = tab.closest(".axis-content-section");
+      if (section) {
+        section.querySelectorAll(".variant-config-pane").forEach((p) => p.classList.remove("active"));
+        const targetPane = section.querySelector(`#pane-${targetVariant}`);
+        if (targetPane) targetPane.classList.add("active");
+      }
+    });
+  });
+
+  // --- EVENT: LẮNG NGHE INPUTS SỐ, SELECT, TEXT ĐỂ RENDER HÌNH HỌC THỜI GIAN THỰC ---
+  document.querySelectorAll(".number-input, .select-input, .text-input").forEach((input) => {
+      input.addEventListener("input", applyGeometryTokens);
+      input.addEventListener("change", applyGeometryTokens);
+  }); 
+
+  // --- EVENT: THAY ĐỔI FONT CHỮ GLOBAL ---
+  document.querySelectorAll(".font-dropdown").forEach((dropdown) => {
+    dropdown.addEventListener("change", (e) => {
+      const targetFont = e.target.getAttribute("data-target-font");
+      const selectedFont = e.target.value;
+      if (targetFont === "heading") {
+        const dynH1 = document.getElementById("dyn-h1");
+        if (dynH1) dynH1.style.fontFamily = selectedFont;
+        const subH1 = document.getElementById("sub-h1");
+        if (subH1) subH1.innerText = `${selectedFont}, 56px, 600, Line: 1.1`;
+      } else if (targetFont === "body") {
+        const dynP = document.getElementById("dyn-p");
+        if (dynP) dynP.style.fontFamily = selectedFont;
+        const subP = document.getElementById("sub-p");
+        if (subP) subP.innerText = `${selectedFont}, 18px, 400, Line: 1.6`;
+      }
+    });
+  });
+
+  // --- EVENT: ACCORDION TOGGLE ĐÓNG/MỞ DANH MỤC ---
+  document.querySelectorAll(".accordion-header").forEach((h) => {
+    h.addEventListener("click", () => {
+      const content = h.nextElementSibling;
+      if (content) {
+        content.style.display = content.style.display === "none" || content.style.display === "" ? "flex" : "none";
+      }
+    });
+  });
 });

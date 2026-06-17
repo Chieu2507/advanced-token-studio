@@ -1,986 +1,1082 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omnise Design System - Advanced Token Studio</title>
-    <link rel="stylesheet" href="./style.css">
-    <script src="./script.js?v=1.0.2" defer></script>
+<meta charset="UTF-8">
+<title>Theme V1 → V2 Converter</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    background:#f5f5f5;
+    font-family:Arial,sans-serif;
+}
+
+h2{
+    margin-top:0;
+}
+
+.container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.panel{
+    background:#fff;
+    border-radius:8px;
+    padding:16px;
+}
+
+textarea{
+    width:100%;
+    height:500px;
+    resize:vertical;
+    font-family:monospace;
+    font-size:13px;
+    padding:12px;
+}
+
+.actions{
+    display:flex;
+    gap:12px;
+    margin:20px 0;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+#convertBtn{
+    background:#111;
+    color:#fff;
+}
+
+#downloadBtn{
+    background:#0d6efd;
+    color:#fff;
+}
+</style>
 </head>
 <body>
-    <header>
-        <div>Omnise Compiler Studio — <strong>Layer 1 Token Contract</strong></div>
-       <div class="header-actions" style="display: flex;gap: 10px;">
-            <button class="toolbar-btn json-btn" id="edit-toggle-btn" title="JSON">
-               <svg  width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M10.221 2.956a.75.75 0 0 0-1.442-.412l-3 10.5a.75.75 0 0 0 1.442.412z"></path><path d="M5.03 4.22a.75.75 0 0 1 0 1.06l-2.72 2.72 2.72 2.72a.749.749 0 1 1-1.06 1.06l-3.25-3.25a.75.75 0 0 1 0-1.06l3.25-3.25a.75.75 0 0 1 1.06 0"></path><path d="M10.97 11.78a.75.75 0 0 1 0-1.06l2.72-2.72-2.72-2.72a.749.749 0 1 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0"></path></svg>
-                </svg>
-            </button>
-            <div class="toolbar-group">
-                <button class="toolbar-btn active" title="Desktop">
-                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.5 4.25a2.75 2.75 0 0 1 2.75-2.75h7.5a2.75 2.75 0 0 1 2.75 2.75v4.5a2.75 2.75 0 0 1-2.75 2.75h-1.25v1.5h.75a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1 0-1.5h.75v-1.5h-1.25a2.75 2.75 0 0 1-2.75-2.75zm5.5 7.25h2v1.5h-2zm-2.75-8.5c-.69 0-1.25.56-1.25 1.25v3.25h10v-3.25c0-.69-.56-1.25-1.25-1.25zm8.725 6c-.116.57-.62 1-1.225 1h-7.5a1.25 1.25 0 0 1-1.225-1z"></path></svg>
-                </button>
 
-                <button class="toolbar-btn" title="Tablet">
-               <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6 10.75c0-.414.373-.75.833-.75h2.334c.46 0 .833.336.833.75s-.373.75-.833.75h-2.334c-.46 0-.833-.336-.833-.75"></path><path d="M2.75 3a2.75 2.75 0 0 0-2.75 2.75v5.5a2.75 2.75 0 0 0 2.75 2.75h10.5a2.75 2.75 0 0 0 2.75-2.75v-5.5a2.75 2.75 0 0 0-2.75-2.75zm-1.25 2.75c0-.69.56-1.25 1.25-1.25h10.5c.69 0 1.25.56 1.25 1.25v5.5c0 .69-.56 1.25-1.25 1.25h-10.5c-.69 0-1.25-.56-1.25-1.25z"></path></svg>
-                </button>
+<h2>Theme V1 → V2 Converter</h2>
 
-                <button class="toolbar-btn" title="Mobile">
-                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5.75 11.75a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75"></path><path fill-rule="evenodd" d="M2.75 3.75a2.75 2.75 0 0 1 2.75-2.75h5a2.75 2.75 0 0 1 2.75 2.75v8.5a2.75 2.75 0 0 1-2.75 2.75h-5a2.75 2.75 0 0 1-2.75-2.75zm2.75-1.25c-.69 0-1.25.56-1.25 1.25v8.5c0 .69.56 1.25 1.25 1.25h5c.69 0 1.25-.56 1.25-1.25v-8.5c0-.69-.56-1.25-1.25-1.25h-.531c-.112.431-.503.75-.969.75h-2a1 1 0 0 1-.968-.75z"></path></svg>
-                </button>
-            </div>
-
-        </div>
-    </header>
-    <div class="editor-container">
-        <div class="axis-panel" id="axisMenu">
-            <div class="axis-menu-content">
-                <div class="axis-title">Theme Axes</div>
-                <div class="axis-item active" data-target="colors"><span>🎨 Colors</span><span class="axis-count">24</span></div>
-                <div class="axis-item" data-target="typography"><span>🔤 Typography</span><span class="axis-count">14</span></div>
-                <div class="axis-item" data-target="buttons"><span>🔘 Buttons</span><span class="axis-count">7</span></div>
-                <div class="axis-item" data-target="cards"><span>🔲 Cards </span><span class="axis-count">4</span></div>
-                <div class="axis-item" data-target="spacing"><span>📐 Spacing </span><span class="axis-count">1</span></div>
-                <div class="axis-item" data-target="form"><span>📝 Form </span><span class="axis-count">4</span></div>
-                <div class="axis-item" data-target="badge"><span>🏅 Badges</span><span class="axis-count">3</span></div>
-            </div>
-            <div class="theme-list-content">
-                <div class="theme-title">Theme</div>
-                <div class="theme-item active" data-target="editoral-luxe">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>01 - Editorial Luxe</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: High-end fashion, luxury real estate, premium lifestyle brands.
-                        </p>
-                    </div>
-                </div>
-                <div class="theme-item" data-target="modern-minimal">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>02 - Modern Minimal</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: SaaS platforms, design agencies, architecture portfolios.
-                        </p>
-                    </div>
-                </div>
-                <div class="theme-item" data-target="wellness-therapeutic">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>03 - Wellness Therapeutic</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Health and wellness brands, fitness and wellness startups.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="minimalist-extreme">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>04 - Minimalist Extreme</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Minimalist brands, minimalist startups, clean design agencies.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="clean-professional">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>05 - Clean Professional</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: High-end fashion, luxury real estate, premium lifestyle brands.
-                        </p>
-                    </div>  
-                </div>  
-                <div class="theme-item" data-target="developer-dark">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>06 - Developer Dark</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Developers, designers, product managers, engineers.
-                        </p>
-                    </div>  
-                </div> 
-                <div class="theme-item" data-target="al-native">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>07 - Al Native</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Alumni, professionals, entrepreneurs, startups.
-                        </p>
-                    </div>  
-                </div>
-                    <div class="theme-item" data-target="consumer-friendly">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>08 - Consumer Friendly</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Consumer brands, consumer products, ecommerce startups.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="dtc-lifestyle">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>09 - DTC Lifestyle</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Design thinking consultants, digital transformation coaches, lifestyle brands.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="web3-native">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>10 - Web3 Native</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Web3 startups, blockchain projects, decentralized applications.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="enterprise-premium">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>11 - Enterprise Premium</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Enterprise brands, enterprise solutions, high-end lifestyle brands.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="wellness-therapeutic">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>12 - Wellness Therapeutic</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Health and wellness brands, fitness and wellness startups.
-                        </p>
-                    </div>  
-                </div>
-                <div class="theme-item" data-target="minimalist-extreme">
-                    <div class="theme-item-title">
-                        <div class="theme-item-title-text">
-                            <span>13 - Minimalist Extreme</span>
-                        </div>
-                        <p class="best-for">
-                            Best for: Minimalist brands, minimalist startups, clean design agencies.
-                        </p>
-                    </div>  
-                </div>
-            </div>
-            
-        </div>
-
-        <div class="config-panel" id="config-panel">
-            <div class="config-panel-content">  
-                <div class="dynamic-header-zone">
-                    <div id="surface-selector-wrapper">
-                        <div class="scheme-selector-title">Surfaces</div>
-                        <div class="scheme-cards-grid">
-                            <div class="scheme-visual-card active" data-scheme="light">
-                                <div class="scheme-box-preview" style="background:#ffffff; color:#0a0a0a;">
-                                    <span>Aa</span>
-                                    <div class="dot-group">
-                                        <div class="dot" style="background:#0a0a0a"></div>
-                                        <div class="dot" style="background:#404040"></div>
-                                    </div>
-                                </div>
-                                <div class="scheme-label">Default</div>
-                            </div>
-                            <div class="scheme-visual-card" data-scheme="dark">
-                                <div class="scheme-box-preview" style="background:#0a0a0a; color:#fafafa; border-color:#262626">
-                                    <span>Aa</span>
-                                    <div class="dot-group">
-                                        <div class="dot" style="background:#fafafa"></div>
-                                        <div class="dot" style="background:#a3a3a3"></div>
-                                    </div>
-                                </div>
-                                <div class="scheme-label">Dark</div>
-                            </div>
-                            <div class="scheme-visual-card" data-scheme="accent">
-                                <div class="scheme-box-preview" style="background:#171717; color:#ffffff; border-color:#404040">
-                                    <span>Aa</span>
-                                    <div class="dot-group">
-                                        <div class="dot" style="background:#ffffff"></div>
-                                        <div class="dot" style="background:#d4d4d4"></div>
-                                    </div>
-                                </div>
-                                <div class="scheme-label">Accent</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="font-selector-wrapper">
-                        <div class="font-select-title">Typography</div>
-                        <div class="font-row">
-                            <span class="font-label">Heading</span>
-                            <select class="font-dropdown" data-target-font="heading"><option>Inter</option><option>Figtree</option><option>Kaisei Decol</option></select>
-                        </div>
-                        <div class="font-row">
-                            <span class="font-label">Body</span>
-                            <select class="font-dropdown" data-target-font="body"><option>Inter</option><option>Figtree</option><option>Kaisei Decol</option></select>
-                        </div>
-                    </div>
-
-                    <div id="blueprint-buttons-header" class="blueprint-header-wrapper">
-                        <div id="button-selector-wrapper">
-                        <div class="global-config-block">
-                            <div class="scheme-selector-title" style="margin-bottom: 8px;">Button Shared Settings</div>
-                            <div class="token-field">
-                                <span class="token-label">Font size</span>
-                                <input type="number" class="number-input" id="btn-global-size" value="15">
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Letter spacing</span>
-                                <input type="text" class="text-input" id="btn-global-spacing" value="0em">
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Font weight</span>
-                                <select class="select-input" id="btn-global-weight">
-                                    <option value="400">400 — Regular</option>
-                                    <option value="500" selected>500 — Medium</option>
-                                    <option value="600">600 — Semi Bold</option>
-                                    <option value="700">700 — Bold</option>
-                                </select>
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Transform</span>
-                                <select class="select-input" id="btn-global-transform">
-                                    <option value="none" selected>none</option>
-                                    <option value="uppercase">UPPERCASE</option>
-                                    <option value="lowercase">lowercase</option>
-                                    <option value="capitalize">Capitalize</option>
-                                </select>
-                            </div>
-
-                            <div class="scheme-selector-title" style="margin-top: 10px; margin-bottom: 8px;">Primary & Secondary</div>
-                            <div class="token-field">
-                                <span class="token-label">Height</span>
-                                <input type="number" class="number-input" id="btn-geo-height" value="44">
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Padding X</span>
-                                <input type="number" class="number-input" id="btn-geo-padding" value="20">
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Border radius</span>
-                                <input type="number" class="number-input" id="btn-geo-radius" value="4">
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div id="blueprint-cards-header" class="blueprint-header-wrapper">
-                        <div class="scheme-selector-title">Card Layout & Geometry</div>
-                        <div class="blueprint-desc">Shared layout, spacing, and corner radius settings used across all card variants.</div>
-                    </div>
-                    <div id="blueprint-spacing-header" class="blueprint-header-wrapper">
-                        <div class="scheme-selector-title">Spacing Scale</div>
-                        <div class="blueprint-desc">Shared spacing values based on a 4px scale system (1 unit = 4px).</div>
-                    </div>
-                    <div id="blueprint-form-header" class="blueprint-header-wrapper">
-                        <div class="scheme-selector-title">Form Controls Layout</div>
-                        <div class="blueprint-desc">Shared size, spacing, and corner radius settings for form controls.</div>
-                    </div>
-                    <div id="blueprint-badge-header" class="blueprint-header-wrapper">
-                        <div class="scheme-selector-title">Badge Layout</div>
-                        <div class="blueprint-desc"> Controls padding, height, and corner radius used across all badge variants.</div>
-                    </div>
-                </div>
-                <div class="config-scroll-area" id="dynamicFieldsContainer">
-                    
-                    <div class="axis-content-section active" id="axis-colors">
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Theme Colors</span></div>
-                            <div class="accordion-content">
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="background"><input type="text" class="hex-input" data-token="background"></div></div>
-                                <div class="token-field"><span class="token-label">Heading</span><div class="token-input-group"><input type="color" class="color-preview" data-token="headingText"><input type="text" class="hex-input" data-token="headingText"></div></div>
-                                <div class="token-field"><span class="token-label">Body text</span><div class="token-input-group"><input type="color" class="color-preview" data-token="bodyText"><input type="text" class="hex-input" data-token="bodyText"></div></div>
-                                <div class="token-field"><span class="token-label">Accent</span><div class="token-input-group"><input type="color" class="color-preview" data-token="accent"><input type="text" class="hex-input" data-token="accent"></div></div>
-                                <div class="token-field"><span class="token-label">Sale price</span><div class="token-input-group"><input type="color" class="color-preview" data-token="salePrice"><input type="text" class="hex-input" data-token="salePrice"></div></div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Button Colors</span></div>
-                            <div class="accordion-content">
-                                <div class="inner-status-tabs" style="display: flex; gap: 4px; margin-bottom: 16px; background: #e5e5e5; padding: 4px; border-radius: 6px; width: 100%;">
-                                    <button type="button" class="sub-tab-btn active" data-state="normal" style="flex: 1; padding: 6px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; background: #ffffff; color: #0a0a0a;">Normal</button>
-                                    <button type="button" class="sub-tab-btn" data-state="hover" style="flex: 1; padding: 6px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; background: transparent; color: #737373;">Hover</button>
-                                </div>
-                            <div class="button-state-pane" id="pane-btn-normal" style="display: flex; gap: 10px; flex-direction: column;">
-                                <div class="token-group-title">Primary Button</div>
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="primaryButton_background"><input type="text" class="hex-input" data-token="primaryButton_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="primaryButton_label"><input type="text" class="hex-input" data-token="primaryButton_label"></div></div>
-                                <div class="token-field"><span class="token-label">Outline</span><div class="token-input-group"><input type="color" class="color-preview" data-token="primaryButton_outline"><input type="text" class="hex-input" data-token="primaryButton_outline"></div></div>
-                                
-                                <div class="token-group-title">Secondary Button</div>
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="secondaryButton_background"><input type="text" class="hex-input" data-token="secondaryButton_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="secondaryButton_label"><input type="text" class="hex-input" data-token="secondaryButton_label"></div></div>
-                                <div class="token-field"><span class="token-label">Outline</span><div class="token-input-group"><input type="color" class="color-preview" data-token="secondaryButton_outline"><input type="text" class="hex-input" data-token="secondaryButton_outline"></div></div>
-                                
-                                <div class="token-group-title">Tertiary Button</div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tertiaryButton_label"><input type="text" class="hex-input" data-token="tertiaryButton_label"></div></div>
-                            </div>
-
-                            <div class="button-state-pane" id="pane-btn-hover" style="display: none; gap: 10px; flex-direction: column;">
-                                <div class="token-group-title">Primary Button Hover</div>
-                                <div class="token-field">
-                                    <span class="token-label">Background Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="primaryButton_hover_background_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-primaryButton_hover_background_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                                <div class="token-field">
-                                    <span class="token-label">Label Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="primaryButton_hover_label_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-primaryButton_hover_label_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                                <div class="token-field">
-                                    <span class="token-label">Outline Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="primaryButton_hover_outline_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-primaryButton_hover_outline_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="token-group-title">Secondary Button Hover</div>
-                                <div class="token-field">
-                                    <span class="token-label">Background Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="secondaryButton_hover_background_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-secondaryButton_hover_background_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                                <div class="token-field">
-                                    <span class="token-label">Label Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="secondaryButton_hover_label_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-secondaryButton_hover_label_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                                <div class="token-field">
-                                    <span class="token-label">Outline Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="secondaryButton_hover_outline_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-secondaryButton_hover_outline_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="token-group-title">Tertiary Button Hover</div>
-                                <div class="token-field">
-                                    <span class="token-label">Label Tone</span>
-                                    <div class="token-input-group" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                                        <input type="range" min="-100" max="100" class="tone-slider" data-token="tertiaryButton_hover_label_tone" style="flex: 1;">
-                                        <span class="tone-value-display" id="display-tertiaryButton_hover_label_tone" style="font-size: 13px; font-weight: 600; min-width: 45px; text-align: right;">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-
-                    <div class="accordion">
-                        <div class="accordion-header"><span>▼ Card Colors</span></div>
-                        <div class="accordion-content">
-
-                            <div class="token-group-title">Featured Card</div>
-                            <div class="token-field">
-                                <span class="token-label">Background</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="featuredCard_background">
-                                    <input type="text" class="hex-input" data-token="featuredCard_background">
-                                </div>
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Border Color</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="featuredCard_borderColor">
-                                    <input type="text" class="hex-input" data-token="featuredCard_borderColor">
-                                </div>
-                            </div>
-
-                            <div class="token-group-title">Product Card</div>
-                            <div class="token-field">
-                                <span class="token-label">Background</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="productCard_background">
-                                    <input type="text" class="hex-input" data-token="productCard_background">
-                                </div>
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Border Color</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="productCard_borderColor">
-                                    <input type="text" class="hex-input" data-token="productCard_borderColor">
-                                </div>
-                            </div>
-
-                            <div class="token-group-title">Pricing Card</div>
-                            <div class="token-field">
-                                <span class="token-label">Background</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="pricingCard_background">
-                                    <input type="text" class="hex-input" data-token="pricingCard_background">
-                                </div>
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Border Color</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="pricingCard_borderColor">
-                                    <input type="text" class="hex-input" data-token="pricingCard_borderColor">
-                                </div>
-                            </div>
-
-                            <div class="token-group-title">CTA Card</div>
-                            <div class="token-field">
-                                <span class="token-label">Background</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="ctaCard_background">
-                                    <input type="text" class="hex-input" data-token="ctaCard_background">
-                                </div>
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Border Color</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="ctaCard_borderColor">
-                                    <input type="text" class="hex-input" data-token="ctaCard_borderColor">
-                                </div>
-                            </div>
-
-                            <div class="token-group-title">Media Card</div>
-                            <div class="token-field">
-                                <span class="token-label">Background</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="mediaCard_background">
-                                    <input type="text" class="hex-input" data-token="mediaCard_background">
-                                </div>
-                            </div>
-                            <div class="token-field">
-                                <span class="token-label">Border Color</span>
-                                <div class="token-input-group">
-                                    <input type="color" class="color-preview" data-token="mediaCard_borderColor">
-                                    <input type="text" class="hex-input" data-token="mediaCard_borderColor">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Form Colors</span></div>
-                            <div class="accordion-content">
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="formInput_background"><input type="text" class="hex-input" data-token="formInput_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="formInput_color"><input type="text" class="hex-input" data-token="formInput_color"></div></div>
-                                <div class="token-field"><span class="token-label">Border color</span><div class="token-input-group"><input type="color" class="color-preview" data-token="formInput_borderColor"><input type="text" class="hex-input" data-token="formInput_borderColor"></div></div>
-                            </div>
-                        </div>
-
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Badge Colors</span></div>
-                            <div class="accordion-content">
-                                <div class="token-group-title">Sale Badge</div>
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="saleBadge_background"><input type="text" class="hex-input" data-token="saleBadge_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="saleBadge_text"><input type="text" class="hex-input" data-token="saleBadge_text"></div></div>
-                                
-                                <div class="token-group-title">Sold Out Badge</div>
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="soldOutBadge_background"><input type="text" class="hex-input" data-token="soldOutBadge_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="soldOutBadge_text"><input type="text" class="hex-input" data-token="soldOutBadge_text"></div></div>
-
-                                <div class="token-group-title">Tag 1</div>
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag1_background"><input type="text" class="hex-input" data-token="tag1_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag1_text"><input type="text" class="hex-input" data-token="tag1_text"></div></div>
-                                <div class="token-group-title">Tag 2</div>
-                                <div class="token-field"><span class="token-label">Background</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag2_background"><input type="text" class="hex-input" data-token="tag2_background"></div></div>
-                                <div class="token-field"><span class="token-label">Label</span><div class="token-input-group"><input type="color" class="color-preview" data-token="tag2_text"><input type="text" class="hex-input" data-token="tag2_text"></div></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="axis-content-section" id="axis-typography">
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 20px;">Heading 1 (H1)</div>
-                                <div class="typo-sub-details" id="sub-h1">Inter, 56px, 600, Line: 1.1</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 20px;">Heading 2 (H2)</div>
-                                <div class="typo-sub-details" id="sub-h1">Inter, 44px, 600, Line: 1.1</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 20px;">Heading 3 (H3)</div>
-                                <div class="typo-sub-details" id="sub-h1">Inter, 32px, 600, Line: 1.1</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 20px;">Heading 4 (H4)</div>
-                                <div class="typo-sub-details" id="sub-h1">Inter, 28px, 600, Line: 1.1</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 20px;">Heading 5 (H5)</div>
-                                <div class="typo-sub-details" id="sub-h1">Inter, 24px, 600, Line: 1.1</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 16px;">Body text (p)</div>
-                                <div class="typo-sub-details" id="sub-p">Inter, 18px, 400, Line: 1.5</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 16px;">Body text 2 (p2)</div>
-                                <div class="typo-sub-details" id="sub-p">Inter, 16px, 400, Line: 1.5</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 16px;">Body text 3 (p3)</div>
-                                <div class="typo-sub-details" id="sub-p">Inter, 14px, 400, Line: 1.5</div>
-                            </div>
-                        </div>
-                        <div class="typo-list-item">
-                            <div class="typo-meta-left">
-                                <div class="typo-preview-text" style="font-size: 16px;">Eyebrow (eyebrow)</div>
-                                <div class="typo-sub-details" id="sub-p">Inter, 12px, 400, Line: 1.5</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="axis-content-section" id="axis-buttons">
-                        <div class="token-group-title" style="margin-bottom: 8px;">Button Variants</div>
-                        <div class="sub-variant-tabs">
-                            <div class="variant-tab active" data-variant="pr">Primary</div>
-                            <div class="variant-tab" data-variant="se">Secondary</div>
-                            <div class="variant-tab" data-variant="te">Tertiary</div>
-                        </div>
-                        <div class="variant-config-pane active" id="pane-pr">
-                            <div class="accordion">
-                                <div class="accordion-header"><span>▼ Primary</span></div>
-                                <div class="accordion-content">
-                                    <div class="token-group-title">Border</div>
-                                    <div class="token-field">
-                                        <span class="token-label">Thickness</span>
-                                        <input type="number" class="number-input" id="btn-pr-border" value="1" step="0.5">
-                                    </div>
-                                    <div class="token-group-title">Shadow</div>
-                                    <div class="token-field">
-                                        <span class="token-label">Horizontal</span>
-                                        <input type="number" class="number-input" id="btn-pr-shadow-x" value="0">
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Vertical</span>
-                                        <input type="number" class="number-input" id="btn-pr-shadow-y" value="4.5" step="0.5">
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Blur</span>
-                                        <input type="number" class="number-input" id="btn-pr-shadow-blur" value="0">
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Transparent (0-1)</span>
-                                        <input type="number" class="number-input" id="btn-pr-shadow-opacity" value="0" min="0" max="1" step="0.1">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="variant-config-pane" id="pane-se">
-                            <div class="accordion">
-                                <div class="accordion-header"><span>▼ Secondary</span></div>
-                                <div class="accordion-content">
-                                    <div class="token-group-title">Border Style</div>
-                                    <div class="token-field">
-                                        <span class="token-label">Thickness</span>
-                                        <input type="number" class="number-input" id="btn-se-border" value="1" step="0.5">
-                                    </div>
-                                    <div class="token-group-title">Shadow</div>
-                                    <div class="token-field">
-                                        <span class="token-label">Horizontal</span>
-                                        <input type="number" class="number-input" id="btn-se-shadow-x" value="0">
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Vertical</span>
-                                        <input type="number" class="number-input" id="btn-se-shadow-y" value="4.5" step="0.5">
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Blur</span>
-                                        <input type="number" class="number-input" id="btn-se-shadow-blur" value="0">
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Transparent (0-1)</span>
-                                        <input type="number" class="number-input" id="btn-se-shadow-opacity" value="0" min="0" max="1" step="0.1">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="variant-config-pane" id="pane-te">
-                            <div class="accordion">
-                                <div class="accordion-header"><span>▼ Tertiary</span></div>
-                                <div class="accordion-content">
-                                    <div class="token-field">
-                                        <span class="token-label">Underline</span>
-                                        <select class="select-input" id="btn-te-underline">
-                                            <option value="none">none</option>
-                                            <option value="underline" selected>underline</option>
-                                        </select>
-                                    </div>
-                                    <div class="token-field">
-                                        <span class="token-label">Underline Offset (px)</span>
-                                        <input type="number" class="number-input" id="btn-te-offset" value="5">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="axis-content-section" id="axis-cards">
-                        <div class="sub-variant-tabs">
-                            <div class="variant-tab active" data-variant="card-feat">Featured</div>
-                            <div class="variant-tab" data-variant="card-prod">Product</div>
-                            <div class="variant-tab" data-variant="card-pricing">Pricing</div>
-                            <div class="variant-tab" data-variant="card-cta">CTA</div>
-                            <div class="variant-tab" data-variant="card-media">Media</div>
-                        </div>
-
-                        <div class="variant-config-pane active" id="pane-card-feat">
-                            <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="card-feat-border" value="0"></div>
-                            <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="card-feat-radius" value="12"></div>
-                            <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="card-feat-padding" value="4"></div>
-                            <div class="token-field"><span class="token-label">Gap</span><input type="number" class="number-input" id="card-feat-gap" value="4"></div>
-                        </div>
-
-                        <div class="variant-config-pane" id="pane-card-prod">
-                            <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="card-prod-border" value="1"></div>
-                            <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="card-prod-radius" value="8"></div>
-                            <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="card-prod-padding" value="4"></div>
-                            <div class="token-field"><span class="token-label">Gap</span><input type="number" class="number-input" id="card-prod-gap" value="3"></div>
-                        </div>
-                        <div class="variant-config-pane" id="pane-card-pricing">
-                            <div class="token-field">
-                                <span class="token-label">Border width</span>
-                                <input type="number" class="number-input" id="card-pricing-border" value="1">
-                            </div>
-
-                            <div class="token-field">
-                                <span class="token-label">Border radius</span>
-                                <input type="number" class="number-input" id="card-pricing-radius" value="12">
-                            </div>
-
-                            <div class="token-field">
-                                <span class="token-label">Padding</span>
-                                <input type="number" class="number-input" id="card-pricing-padding" value="5">
-                            </div>
-
-                            <div class="token-field">
-                                <span class="token-label">Gap</span>
-                                <input type="number" class="number-input" id="card-pricing-gap" value="4">
-                            </div>
-                        </div>
-                        <div class="variant-config-pane" id="pane-card-cta">
-                            <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="card-cta-border" value="1"></div>
-                            <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="card-cta-radius" value="12"></div>
-                            <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="card-cta-padding" value="6"></div>
-                            <div class="token-field"><span class="token-label">Gap</span><input type="number" class="number-input" id="card-cta-gap" value="4"></div>
-                        </div>
-                        <div class="variant-config-pane" id="pane-card-media">
-                            <div class="token-field">
-                                <span class="token-label">Border width</span>
-                                <input type="number" class="number-input" id="card-media-border" value="1">
-                            </div>
-
-                            <div class="token-field">
-                                <span class="token-label">Border radius</span>
-                                <input type="number" class="number-input" id="card-media-radius" value="8">
-                            </div>
-
-                            <div class="token-field">
-                                <span class="token-label">Padding</span>
-                                <input type="number" class="number-input" id="card-media-padding" value="4">
-                            </div>
-
-                            <div class="token-field">
-                                <span class="token-label">Gap</span>
-                                <input type="number" class="number-input" id="card-media-gap" value="2">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="axis-content-section" id="axis-spacing">
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Core Grid Layout Spacing</span></div>
-                            <div class="accordion-content">
-                            <div class="token-field">
-                                    <span class="token-label">Grid gap</span>
-                                    <input type="number" class="number-input" id="space-grid-gap-desk" value="6">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="axis-content-section" id="axis-form">
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Input Layout & Geometry</span></div>
-                            <div class="accordion-content">
-                                <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="form-input-border" value="1"></div>
-                                <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="form-input-radius" value="4"></div>
-                                <div class="token-field"><span class="token-label">Padding X</span><input type="number" class="number-input" id="form-input-padding" value="4"></div>
-                                <div class="token-field"><span class="token-label">Height</span><input type="number" class="number-input" id="form-input-height" value="4"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="axis-content-section" id="axis-badge">
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Badge Layout & Geometry</span></div>
-                            <div class="accordion-content">
-                                <div class="token-field"><span class="token-label">Border width</span><input type="number" class="number-input" id="badge-default-border" value="1"></div>
-                                <div class="token-field"><span class="token-label">Border radius</span><input type="number" class="number-input" id="badge-default-radius" value="4"></div>
-                                <div class="token-field"><span class="token-label">Padding</span><input type="number" class="number-input" id="badge-default-padding" value="1"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="tb-axis-options-content">
-                <div class="dynamic-header-zone">
-                    <div id="surface-selector-wrapper">
-                        <div class="scheme-selector-title">Surfaces</div>
-                        <div class="scheme-cards-grid">
-                            <div class="scheme-visual-card active" data-scheme="light">
-                                <div class="scheme-box-preview" style="background:#ffffff; color:#0a0a0a;">
-                                    <span>Aa</span>
-                                    <div class="dot-group">
-                                        <div class="dot" style="background:#0a0a0a"></div>
-                                        <div class="dot" style="background:#404040"></div>
-                                    </div>
-                                </div>
-                                <div class="scheme-label">Default</div>
-                            </div>
-                            <div class="scheme-visual-card" data-scheme="dark">
-                                <div class="scheme-box-preview" style="background:#0a0a0a; color:#fafafa; border-color:#262626">
-                                    <span>Aa</span>
-                                    <div class="dot-group">
-                                        <div class="dot" style="background:#fafafa"></div>
-                                        <div class="dot" style="background:#a3a3a3"></div>
-                                    </div>
-                                </div>
-                                <div class="scheme-label">Dark</div>
-                            </div>
-                            <div class="scheme-visual-card" data-scheme="accent">
-                                <div class="scheme-box-preview" style="background:#171717; color:#ffffff; border-color:#404040">
-                                    <span>Aa</span>
-                                    <div class="dot-group">
-                                        <div class="dot" style="background:#ffffff"></div>
-                                        <div class="dot" style="background:#d4d4d4"></div>
-                                    </div>
-                                </div>
-                                <div class="scheme-label">Accent</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="config-scroll-area">
-                    <div class="axis-content-select" id="dynamicPersonalityOptions">
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Personality Options
-                                </span>
-                            </div>
-                            <div class="tb-axis-row">
-                                <div class="tb-pills-wrap">
-                                    <button class="tb-pill active" data-axis="palette" data-value="blue-accent">Blue Accent</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="terminal-dark">Terminal Dark</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="warm-dev">Warm Dev</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="monochrome">Monochrome</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="syntax-blue">Syntax Blue</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="warm-neutral">Warm Neutral</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="amber-crt">Amber CRT</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="axis-content-select" id="dynamicAxisOptions">
-                        <div class="accordion">
-                            <div class="accordion-header"><span>▼ Axis Options
-                            </span>
-                        </div>
-                        <div class="tb-axis-item">
-                            <div class="tb-axis-row">
-                                <div class="tb-axis-label">Palette</div>
-                                <div class="tb-pills-wrap">
-                                    <button class="tb-pill active" data-axis="palette" data-value="blue-accent">Blue Accent</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="terminal-dark">Terminal Dark</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="warm-dev">Warm Dev</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="monochrome">Monochrome</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="syntax-blue">Syntax Blue</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="warm-neutral">Warm Neutral</button>
-                                    <button class="tb-pill" data-axis="palette" data-value="amber-crt">Amber CRT</button>
-                                </div>
-                            </div>
-                            <div class="tb-axis-row">
-                                <div class="tb-axis-label">Typeface</div>
-                                <div class="tb-pills-wrap">
-                                    <button class="tb-pill active" data-axis="typeface" data-value="humanist-sans">Humanist Sans</button>
-                                    <button class="tb-pill" data-axis="typeface" data-value="geometric-sans">Geometric Sans</button>
-                                    <button class="tb-pill" data-axis="typeface" data-value="mono-display">Mono Display</button>
-                                </div>
-                            </div>
-                        
-                            <div class="tb-axis-row">
-                                <div class="tb-axis-label">Type Weight</div>
-                                <div class="tb-pills-wrap">
-                                    <button class="tb-pill active" data-axis="typeweight" data-value="regular">Regular</button>
-                                    <button class="tb-pill" data-axis="typeweight" data-value="medium">Medium</button>
-                                    <button class="tb-pill" data-axis="typeweight" data-value="semibold">Semibold</button>
-                                </div>
-                            </div>
-                        
-                            <div class="tb-axis-row">
-                                <div class="tb-axis-label">Density</div>
-                                <div class="tb-pills-wrap">
-                                    <button class="tb-pill" data-axis="density" data-value="compact">Compact</button>
-                                    <button class="tb-pill" data-axis="density" data-value="standard">Standard</button>
-                                    <button class="tb-pill active" data-axis="density" data-value="spacious">Spacious</button>
-                                    <button class="tb-pill" data-axis="density" data-value="ultra-compact">Ultra Compact</button>
-                                </div>
-                            </div>
-                        
-                            <div class="tb-axis-row">
-                                <div class="tb-axis-label">Silhouette</div>
-                                <div class="tb-pills-wrap">
-                                    <button class="tb-pill" data-axis="silhouette" data-value="minimal">Minimal</button>
-                                    <button class="tb-pill active" data-axis="silhouette" data-value="standard">Standard</button>
-                                    <button class="tb-pill" data-axis="silhouette" data-value="pillowy">Pillowy</button>
-                                    <button class="tb-pill" data-axis="silhouette" data-value="sharp">Sharp</button>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        <div class="preview-panel">
-            <div class="preview-title">Live Preview Rendering Canvas</div>
-            <div class="preview-canvas" id="previewCanvas">
-                
-                <div class="demo-text">
-                    <h1 id="dyn-h1">Modern Minimal Studio</h1>
-                    <p id="dyn-p">This compiler resolves theme values dynamically. Modify tokens in column 2 or change surface perspectives at the top cards to watch instant style updates.</p>
-                </div>
-
-                <div class="demo-block">
-                    <div class="demo-section-title">Interactive Buttons</div>
-                    <div class="demo-buttons">
-                        <button class="btn-style" id="p-btn">Primary</button>
-                        <button class="btn-style" id="s-btn">Secondary</button>
-                        <button class="btn-style" id="t-btn" style="background:transparent; border:none; font-weight:600;">Tertiary →</button>
-                    </div>
-                </div>
-
-                <div class="demo-block">
-                    <div class="demo-section-title">Grid Render Layout</div>
-                    <div class="grid-cards" id="demo-grid">
-                        <div class="card-style" id="f-card">
-                            <div class="card-tag-row">
-                                <span class="badge-style" id="b-sale">Sale</span>
-                                <span class="tag-style" id="t1-badge">Tag Default</span>
-                            </div>
-                            <div style="font-weight:600; font-size:20px;" class="card-head-txt">Featured Card</div>
-                            <div style="font-size:14px;" class="card-body-txt">High visibility context wrapper block built for spotlight nodes.</div>
-                        </div>
-
-                        <div class="card-style" id="prod-card">
-                            <div class="card-tag-row">
-                                <span class="badge-style" id="b-sold">Sold out</span>
-                                <span class="tag-style" id="t2-badge">Tag Inverse</span>
-                            </div>
-                            <div style="font-weight:600; font-size:20px;" class="card-head-txt">Product Card</div>
-                            <div>
-                                <span style="font-weight:700; font-size:18px;" id="dyn-price">$49.00</span>
-                                <span style="font-weight:400; text-decoration: line-through; font-size:18px;" id="dyn-old-price">$79.00</span>
-                            </div>
-                            
-                        </div>
-                        <!-- Pricing -->
-                        <div class="card-style" id="pricing-card">
-                            <div class="card-head-txt" style="font-weight:600;font-size:20px;">
-                                Pricing Card
-                            </div>
-
-                            <div class="card-body-txt">
-                                Professional Plan
-                            </div>
-
-                            <div>
-                                <span style="font-size:32px;font-weight:700;" id="pricing-price">
-                                    $29
-                                </span>
-                                <span class="card-body-txt">
-                                    /month
-                                </span>
-                            </div>
-
-                            <button class="demo-btn primary-btn" id="pricing-primary-btn">
-                                Start Free Trial
-                            </button>
-                        </div>
-
-                        <div class="card-style" id="cta-card">
-                            <div style="font-weight:600; font-size:20px;" class="card-head-txt">CTA Card</div>
-                            <div class="demo-form-group">
-                                <input type="text" class="demo-input" id="demo-form-input" value="Your email address" readonly>
-                                <select class="demo-select" id="demo-form-select">
-                                    <option>Select your country</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Media -->
-                        <div class="card-style" id="media-card">
-                            <div id="demo-media" style="height: 140px; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background-color: #e5e5e5;">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; color: inherit;">
-                                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                                    <circle cx="9" cy="9" r="2"/>
-                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                                </svg>
-                                <span style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 4px; font-weight: 500;">02:45</span>
-                            </div>
-
-                            <div style="display: flex; flex-direction: column; gap: 6px;">
-                                <div style="font-weight:600; font-size:20px;" class="card-head-txt">Media Card</div>
-                                <div style="font-size:14px;" class="card-body-txt">Image, video, gallery or rich visual content component container.</div>
-                            </div>
-
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 13px;">
-                                <span class="card-body-txt" style="display: flex; align-items: center; gap: 4px;">
-                                    👁️ 1.2k views
-                                </span>
-                                <span class="card-body-txt" style="font-weight: 500; cursor: pointer;">
-                                    Read article →
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+<div class="container">
+    <div class="panel">
+        <h3>V1</h3>
+        <textarea id="v1"></textarea>
     </div>
+
+    <div class="panel">
+        <h3>V2</h3>
+<textarea id="v2">
+{
+    "colors": [
+        {
+        "id": "light",
+        "name": "default",
+        "label": "Default",
+        "value": {
+            "text": "#53585f",
+            "accent": "#0055ff",
+            "heading": "#000919",
+            "background": "#ffffff",
+            "btn-pr-label": "#ffffff",
+            "btn-se-label": "#0055ff",
+            "btn-te-label": "#0055ff",
+            "btn-pr-border": "#0055ff",
+            "btn-se-border": "#99bbff",
+            "form-input-color": "#0a0a0a",
+            "btn-pr-background": "#0055ff",
+            "btn-se-background": "transparent",
+            "form-select-color": "#0a0a0a",
+            "btn-pr-label-hover": "0",
+            "btn-se-label-hover": "0",
+            "btn-te-label-hover": "-8",
+            "btn-pr-border-hover": "-8",
+            "btn-se-border-hover": "-4",
+            "card-cta-background": "#ffffff",
+            "form-textarea-color": "#0a0a0a",
+            "card-prod-background": "#ffffff",
+            "card-cta-border-color": "#ededed",
+            "card-cta-shadow-color": "#000000",
+            "card-media-background": "#ffffff",
+            "form-input-background": "#ffffff",
+            "card-prod-border-color": "#ffffff",
+            "card-prod-shadow-color": "#000000",
+            "form-select-background": "#ffffff",
+            "btn-pr-background-hover": "-8",
+            "btn-se-background-hover": "-4",
+            "card-media-border-color": "#ededed",
+            "card-media-shadow-color": "#000000",
+            "card-pricing-background": "#ffffff",
+            "form-input-border-color": "#d4d4d4",
+            "card-featured-background": "#ffffff",
+            "form-select-border-color": "#d4d4d4",
+            "form-textarea-background": "#ffffff",
+            "card-pricing-border-color": "#ededed",
+            "card-pricing-shadow-color": "#000000",
+            "card-featured-border-color": "#ededed",
+            "card-featured-shadow-color": "#000000",
+            "form-textarea-border-color": "#d4d4d4"
+        }
+        },
+        {
+        "id": "dark",
+        "name": "dark",
+        "label": "Dark",
+        "value": {
+            "text": "#8f9bb3",
+            "accent": "#ffffff",
+            "heading": "#ffffff",
+            "background": "#000919",
+            "btn-pr-label": "#ffffff",
+            "btn-se-label": "#ffffff",
+            "btn-te-label": "#ffffff",
+            "btn-pr-border": "#0055ff",
+            "btn-se-border": "#646973",
+            "form-input-color": "#fafafa",
+            "btn-pr-background": "#0055ff",
+            "btn-se-background": "transparent",
+            "form-select-color": "#fafafa",
+            "btn-pr-label-hover": "0",
+            "btn-se-label-hover": "0",
+            "btn-te-label-hover": "-8",
+            "btn-pr-border-hover": "-8",
+            "btn-se-border-hover": "-4",
+            "card-cta-background": "#001133",
+            "form-textarea-color": "#fafafa",
+            "card-prod-background": "#000919",
+            "card-cta-border-color": "#3e485b",
+            "card-cta-shadow-color": "#000000",
+            "card-media-background": "#001133",
+            "form-input-background": "#171717",
+            "card-prod-border-color": "#000919",
+            "card-prod-shadow-color": "#000000",
+            "form-select-background": "#171717",
+            "btn-pr-background-hover": "-8",
+            "btn-se-background-hover": "-4",
+            "card-media-border-color": "#3e485b",
+            "card-media-shadow-color": "#000000",
+            "card-pricing-background": "#001133",
+            "form-input-border-color": "#404040",
+            "card-featured-background": "#000919",
+            "form-select-border-color": "#404040",
+            "form-textarea-background": "#171717",
+            "card-pricing-border-color": "#3e485b",
+            "card-pricing-shadow-color": "#000000",
+            "card-featured-border-color": "#3e485b",
+            "card-featured-shadow-color": "#000000",
+            "form-textarea-border-color": "#404040"
+        }
+        },
+        {
+        "id": "accent",
+        "name": "accent",
+        "label": "Accent",
+        "value": {
+            "text": "#ffffff",
+            "accent": "#ffffff",
+            "heading": "#ffffff",
+            "background": "#003399",
+            "btn-pr-label": "#003399",
+            "btn-se-label": "#ffffff",
+            "btn-te-label": "#ffffff",
+            "btn-pr-border": "#ffffff",
+            "btn-se-border": "#6c80a7",
+            "form-input-color": "#ffffff",
+            "btn-pr-background": "#ffffff",
+            "btn-se-background": "transparent",
+            "form-select-color": "#ffffff",
+            "btn-pr-label-hover": "0",
+            "btn-se-label-hover": "0",
+            "btn-te-label-hover": "-8",
+            "btn-pr-border-hover": "-8",
+            "btn-se-border-hover": "-4",
+            "card-cta-background": "#002266",
+            "form-textarea-color": "#ffffff",
+            "card-prod-background": "#003399",
+            "card-cta-border-color": "#3377ff",
+            "card-cta-shadow-color": "#000000",
+            "card-media-background": "#002266",
+            "form-input-background": "#262626",
+            "card-prod-border-color": "#003399",
+            "card-prod-shadow-color": "#000000",
+            "form-select-background": "#262626",
+            "btn-pr-background-hover": "-8",
+            "btn-se-background-hover": "-4",
+            "card-media-border-color": "#3377ff",
+            "card-media-shadow-color": "#000000",
+            "card-pricing-background": "#002266",
+            "form-input-border-color": "#525252",
+            "card-featured-background": "#003399",
+            "form-select-border-color": "#525252",
+            "form-textarea-background": "#262626",
+            "card-pricing-border-color": "#3377ff",
+            "card-pricing-shadow-color": "#000000",
+            "card-featured-border-color": "#3377ff",
+            "card-featured-shadow-color": "#000000",
+            "form-textarea-border-color": "#525252"
+        }
+        },
+        {
+        "id": "muted",
+        "name": "muted",
+        "label": "Muted",
+        "value": {
+            "text": "#404040",
+            "accent": "#171717",
+            "heading": "#0a0a0a",
+            "background": "#fafafa",
+            "btn-pr-label": "#ffffff",
+            "btn-se-label": "#0a0a0a",
+            "btn-te-label": "#0a0a0a",
+            "btn-pr-border": "#0a0a0a",
+            "btn-se-border": "#0a0a0a",
+            "form-input-color": "#0a0a0a",
+            "btn-pr-background": "#0a0a0a",
+            "btn-se-background": "#ffffff",
+            "form-select-color": "#0a0a0a",
+            "btn-pr-label-hover": "0",
+            "btn-se-label-hover": "0",
+            "btn-te-label-hover": "-8",
+            "btn-pr-border-hover": "-8",
+            "btn-se-border-hover": "-4",
+            "card-cta-background": "#ffffff",
+            "form-textarea-color": "#0a0a0a",
+            "card-prod-background": "#fafafa",
+            "card-cta-border-color": "#e5e5e5",
+            "card-cta-shadow-color": "#000000",
+            "card-media-background": "#ffffff",
+            "form-input-background": "#ffffff",
+            "card-prod-border-color": "#e5e5e5",
+            "card-prod-shadow-color": "#000000",
+            "form-select-background": "#ffffff",
+            "btn-pr-background-hover": "-8",
+            "btn-se-background-hover": "-4",
+            "card-media-border-color": "#e5e5e5",
+            "card-media-shadow-color": "#000000",
+            "card-pricing-background": "#ffffff",
+            "form-input-border-color": "#d4d4d4",
+            "card-featured-background": "#fafafa",
+            "form-select-border-color": "#d4d4d4",
+            "form-textarea-background": "#ffffff",
+            "card-pricing-border-color": "#e5e5e5",
+            "card-pricing-shadow-color": "#000000",
+            "card-featured-border-color": "#e5e5e5",
+            "card-featured-shadow-color": "#000000",
+            "form-textarea-border-color": "#d4d4d4"
+        }
+        },
+        {
+        "id": "other",
+        "name": "badge",
+        "label": "Badge",
+        "value": {
+            "sale-bg": "#d82727",
+            "tag-1-bg": "#002266",
+            "tag-2-bg": "#c7daff",
+            "sale-text": "#ffffff",
+            "sale-price": "#d82727",
+            "tag-1-text": "#ffffff",
+            "tag-2-text": "#000919",
+            "sold-out-bg": "#adadad",
+            "sold-out-text": "#ffffff",
+            "btn-pr-label-hover": "0",
+            "btn-se-label-hover": "0",
+            "btn-te-label-hover": "-8",
+            "btn-pr-border-hover": "-8",
+            "btn-se-border-hover": "-4",
+            "btn-pr-background-hover": "-8",
+            "btn-se-background-hover": "-4"
+        }
+        }
+    ],
+    "typography": [
+        {
+        "id": "h1",
+        "name": "h1",
+        "label": "Heading 1",
+        "value": {
+            "fontSize": 58,
+            "fontStyle": "Normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.2,
+            "letterSpacing": -0.02,
+            "textTransform": "capitalize",
+            "fontSize_mobile": 42,
+            "fontSize_tablet": 50,
+            "lineHeight_mobile": 1.2,
+            "lineHeight_tablet": 1.2,
+            "letterSpacing_mobile": -0.02,
+            "letterSpacing_tablet": -0.02
+        }
+        },
+        {
+        "id": "h2",
+        "name": "h2",
+        "label": "Heading 2",
+        "value": {
+            "fontSize": 42,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.2,
+            "letterSpacing": -0.01,
+            "textTransform": "capitalize",
+            "fontSize_mobile": 34,
+            "fontSize_tablet": 38,
+            "lineHeight_mobile": 1.2,
+            "lineHeight_tablet": 1.2,
+            "letterSpacing_mobile": -0.01,
+            "letterSpacing_tablet": -0.01
+        }
+        },
+        {
+        "id": "h3",
+        "name": "h3",
+        "label": "Heading 3",
+        "value": {
+            "fontSize": 34,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.3,
+            "letterSpacing": -0.01,
+            "textTransform": "capitalize",
+            "fontSize_mobile": 26,
+            "fontSize_tablet": 30,
+            "lineHeight_mobile": 1.3,
+            "lineHeight_tablet": 1.3,
+            "letterSpacing_mobile": -0.01,
+            "letterSpacing_tablet": -0.01
+        }
+        },
+        {
+        "id": "h4",
+        "name": "h4",
+        "label": "Heading 4",
+        "value": {
+            "fontSize": 24,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.4,
+            "letterSpacing": -0.01,
+            "textTransform": "capitalize",
+            "fontSize_mobile": 20,
+            "fontSize_tablet": 22,
+            "lineHeight_mobile": 1.4,
+            "lineHeight_tablet": 1.4,
+            "letterSpacing_mobile": -0.01,
+            "letterSpacing_tablet": -0.01
+        }
+        },
+        {
+        "id": "h5",
+        "name": "h5",
+        "label": "Heading 5",
+        "value": {
+            "fontSize": 20,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.5,
+            "letterSpacing": 0,
+            "textTransform": "capitalize",
+            "fontSize_mobile": 18,
+            "fontSize_tablet": 19,
+            "lineHeight_mobile": 1.5,
+            "lineHeight_tablet": 1.5,
+            "letterSpacing_mobile": 0,
+            "letterSpacing_tablet": 0
+        }
+        },
+        {
+        "id": "p1",
+        "name": "p1",
+        "label": "Paragraph 1",
+        "value": {
+            "fontSize": 16,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.5,
+            "letterSpacing": 0,
+            "textTransform": "none",
+            "fontSize_mobile": 17,
+            "fontSize_tablet": 18,
+            "lineHeight_mobile": 1.5,
+            "lineHeight_tablet": 1.5,
+            "letterSpacing_mobile": 0,
+            "letterSpacing_tablet": 0
+        }
+        },
+        {
+        "id": "p2",
+        "name": "p2",
+        "label": "Paragraph 2",
+        "value": {
+            "fontSize": 14,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.5,
+            "letterSpacing": 0,
+            "textTransform": "none",
+            "fontSize_mobile": 15,
+            "fontSize_tablet": 16,
+            "lineHeight_mobile": 1.5,
+            "lineHeight_tablet": 1.5,
+            "letterSpacing_mobile": 0,
+            "letterSpacing_tablet": 0
+        }
+        },
+        {
+        "id": "p3",
+        "name": "p3",
+        "label": "Paragraph 3",
+        "value": {
+            "fontSize": 12,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "400"
+            ]
+            },
+            "fontWeight": 400,
+            "lineHeight": 1.5,
+            "letterSpacing": 0,
+            "textTransform": "none",
+            "fontSize_mobile": 13,
+            "fontSize_tablet": 14,
+            "lineHeight_mobile": 1.5,
+            "lineHeight_tablet": 1.5,
+            "letterSpacing_mobile": 0,
+            "letterSpacing_tablet": 0
+        }
+        },
+        {
+        "id": "eyebrow",
+        "name": "eyebrow",
+        "label": "Eyebrow",
+        "value": {
+            "fontSize": 13,
+            "fontStyle": "normal",
+            "fontFamily": {
+            "axes": [
+                {
+                "max": 800,
+                "min": 200,
+                "tag": "wght",
+                "defaultValue": 400
+                }
+            ],
+            "family": "IBM Plex Sans",
+            "source": "google",
+            "variants": [
+                "500"
+            ]
+            },
+            "fontWeight": 500,
+            "lineHeight": 1.5,
+            "letterSpacing": 0.2,
+            "textTransform": "uppercase",
+            "fontSize_mobile": 12,
+            "fontSize_tablet": 13,
+            "lineHeight_mobile": 1.5,
+            "lineHeight_tablet": 1.5,
+            "letterSpacing_mobile": 0.2,
+            "letterSpacing_tablet": 0.1
+        }
+        }
+    ],
+    "buttons": [
+        {
+        "id": "primary",
+        "name": "btn-pr",
+        "label": "Primary",
+        "value": {
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "shadowTransparent": 0,
+            "borderWidth_mobile": 1,
+            "borderWidth_tablet": 1
+        }
+        },
+        {
+        "id": "secondary",
+        "name": "btn-se",
+        "label": "Secondary",
+        "value": {
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "shadowTransparent": 0,
+            "borderWidth_mobile": 1,
+            "borderWidth_tablet": 1
+        }
+        },
+        {
+        "id": "tertiary",
+        "name": "btn-te",
+        "label": "Tertiary",
+        "value": {
+            "icon": "",
+            "underline": true,
+            "underlineOffset": 4
+        }
+        },
+        {
+        "id": "button",
+        "name": "btn",
+        "label": "Button",
+        "value": {
+            "height": 48,
+            "padding": 30,
+            "fontSize": 14,
+            "fontWeight": 400,
+            "borderRadius": 4,
+            "height_mobile": 45,
+            "height_tablet": 45,
+            "letterSpacing": 1,
+            "textTransform": "None",
+            "padding_mobile": 30,
+            "padding_tablet": 30,
+            "fontSize_mobile": 15,
+            "fontSize_tablet": 15,
+            "transition_hover": 150
+        }
+        }
+    ],
+    "cards": [
+        {
+        "id": "featured",
+        "label": "Featured",
+        "value": {
+            "gap": 4,
+            "padding": 4,
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "backdropBlur": 0,
+            "borderRadius": 6,
+            "backdropSaturate": 0,
+            "shadowTransparent": 0
+        }
+        },
+        {
+        "id": "product",
+        "label": "Product",
+        "value": {
+            "gap": 3,
+            "padding": 4,
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "backdropBlur": 0,
+            "borderRadius": 6,
+            "backdropSaturate": 0,
+            "shadowTransparent": 0
+        }
+        },
+        {
+        "id": "pricing",
+        "label": "Pricing",
+        "value": {
+            "gap": 5,
+            "padding": 8,
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "backdropBlur": 0,
+            "borderRadius": 6,
+            "backdropSaturate": 0,
+            "shadowTransparent": 0
+        }
+        },
+        {
+        "id": "cta",
+        "label": "CTA",
+        "value": {
+            "gap": 4,
+            "padding": 10,
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "backdropBlur": 0,
+            "borderRadius": 6,
+            "backdropSaturate": 0,
+            "shadowTransparent": 0
+        }
+        },
+        {
+        "id": "media",
+        "label": "Media",
+        "value": {
+            "gap": 0,
+            "padding": 0,
+            "shadowX": 0,
+            "shadowY": 0,
+            "shadowBlur": 0,
+            "borderWidth": 1,
+            "backdropBlur": 0,
+            "borderRadius": 6,
+            "backdropSaturate": 0,
+            "shadowTransparent": 0
+        }
+        }
+    ],
+    "badges": [
+        {
+        "id": "default",
+        "label": "Default",
+        "value": {
+            "padding": 2,
+            "borderWidth": 1,
+            "borderRadius": 4
+        }
+        }
+    ],
+    "forms": [
+        {
+        "id": "input",
+        "label": "Input",
+        "value": {
+            "height": 4,
+            "padding": 4,
+            "borderWidth": 1,
+            "borderRadius": 6
+        }
+        },
+        {
+        "id": "select",
+        "label": "Select",
+        "value": {
+            "height": 4,
+            "padding": 4,
+            "borderWidth": 1,
+            "borderRadius": 6
+        }
+        },
+        {
+        "id": "textarea",
+        "label": "Textarea",
+        "value": {
+            "height": 4,
+            "padding": 4,
+            "borderWidth": 1,
+            "borderRadius": 6
+        }
+        }
+    ],
+    "spacings": [
+        {
+        "id": "section",
+        "label": "Section",
+        "value": {
+            "width": 1440,
+            "paddingX": 10,
+            "paddingY": 72,
+            "paddingX_mobile": 5,
+            "paddingX_tablet": 8,
+            "paddingY_mobile": 40,
+            "paddingY_tablet": 16
+        }
+        },
+        {
+        "id": "slot",
+        "label": "Slot",
+        "value": {
+            "gap": 32,
+            "paddingX": 0,
+            "paddingY": 0,
+            "gap_mobile": 16,
+            "gap_tablet": 8,
+            "paddingX_mobile": 0,
+            "paddingX_tablet": 0,
+            "paddingY_mobile": 0,
+            "paddingY_tablet": 0
+        }
+        },
+        {
+        "id": "grid",
+        "label": "Grid",
+        "value": {
+            "gap": 20,
+            "gap_mobile": 12,
+            "gap_tablet": 5
+        }
+        }
+    ]
+    }
+</textarea>
+    </div>
+</div>
+
+<div class="actions">
+    <button id="convertBtn">
+        Convert
+    </button>
+
+    <button id="downloadBtn">
+        Download
+    </button>
+</div>
+
+<div class="panel">
+    <h3>Result</h3>
+    <textarea id="output"></textarea>
+</div>
+
+<script>
+function clone(data){
+    return JSON.parse(JSON.stringify(data));
+}
+
+function isObject(value){
+    return (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    );
+}
+
+function deepMerge(target, source){
+
+    const result = clone(target);
+
+    Object.keys(source).forEach(key => {
+
+        const sourceValue = source[key];
+        const targetValue = result[key];
+
+        if(
+            isObject(sourceValue) &&
+            isObject(targetValue)
+        ){
+            result[key] = deepMerge(
+                targetValue,
+                sourceValue
+            );
+        }else{
+            result[key] = clone(sourceValue);
+        }
+    });
+
+    return result;
+}
+
+function normalizeV1Item(item, mapping){
+
+    const targetId =
+        mapping[item.id] || item.id;
+
+    return {
+        ...item,
+        id: targetId,
+        name: targetId
+    };
+}
+
+function mergeArrayById(
+    v1Items,
+    v2Items,
+    mapping = {}
+){
+
+    v1Items = Array.isArray(v1Items)
+        ? v1Items
+        : [];
+
+    v2Items = Array.isArray(v2Items)
+        ? v2Items
+        : [];
+
+    const map = new Map();
+
+    v1Items.forEach(item => {
+
+        const normalized =
+            normalizeV1Item(
+                item,
+                mapping
+            );
+
+        map.set(
+            normalized.id,
+            normalized
+        );
+    });
+
+    return v2Items.map(v2Item => {
+
+        const v1Item =
+            map.get(v2Item.id);
+
+        if(!v1Item){
+            return clone(v2Item);
+        }
+
+        return deepMerge(
+            v2Item,
+            v1Item
+        );
+    });
+}
+
+function convertTheme(v1, v2){
+
+    return {
+
+        ...clone(v2),
+
+        colors: mergeArrayById(
+            v1.colors,
+            v2.colors,
+            {
+                "scheme-1":"light",
+                "other":"other"
+            }
+        ),
+
+        typography: mergeArrayById(
+            v1.typography,
+            v2.typography,
+            {
+                "p":"p1"
+            }
+        ),
+
+        buttons: mergeArrayById(
+            v1.buttons,
+            v2.buttons
+        ),
+
+        cards: mergeArrayById(
+            v1.cards,
+            v2.cards
+        ),
+
+        badges: mergeArrayById(
+            v1.badges,
+            v2.badges
+        ),
+
+        forms: mergeArrayById(
+            v1.forms,
+            v2.forms
+        ),
+
+        spacings: mergeArrayById(
+            v1.spacings,
+            v2.spacings
+        )
+    };
+}
+
+document
+.getElementById("convertBtn")
+.addEventListener("click", () => {
+
+    try{
+
+        const v1 = JSON.parse(
+            document.getElementById("v1").value
+        );
+
+        const v2 = JSON.parse(
+            document.getElementById("v2").value
+        );
+
+        const result =
+            convertTheme(v1, v2);
+
+        document.getElementById(
+            "output"
+        ).value =
+            JSON.stringify(
+                result,
+                null,
+                2
+            );
+
+    }catch(error){
+
+        alert(
+            "JSON Error:\n" +
+            error.message
+        );
+    }
+});
+
+document
+.getElementById("downloadBtn")
+.addEventListener("click", () => {
+
+    const output =
+        document.getElementById(
+            "output"
+        ).value;
+
+    if(!output){
+        alert(
+            "Convert first"
+        );
+        return;
+    }
+
+    const blob =
+        new Blob(
+            [output],
+            {
+                type:"application/json"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+    a.href = url;
+    a.download =
+        "theme-v2.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+});
+</script>
+
 </body>
 </html>
