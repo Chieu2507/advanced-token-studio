@@ -77,762 +77,761 @@ button{
     </div>
     <script>
     const DEFAULT_V2 = {
-    "colors": [
-        {
-        "id": "light",
-        "name": "default",
-        "label": "Default",
-        "value": {
-            "text": "#53585f",
-            "accent": "#0055ff",
-            "heading": "#000919",
-            "background": "#ffffff",
-            "btn-pr-label": "#ffffff",
-            "btn-se-label": "#0055ff",
-            "btn-te-label": "#0055ff",
-            "btn-pr-border": "#0055ff",
-            "btn-se-border": "#99bbff",
-            "form-input-color": "#0a0a0a",
-            "btn-pr-background": "#0055ff",
-            "btn-se-background": "transparent",
-            "form-select-color": "#0a0a0a",
-            "btn-pr-label-hover": "0",
-            "btn-se-label-hover": "0",
-            "btn-te-label-hover": "-8",
-            "btn-pr-border-hover": "-8",
-            "btn-se-border-hover": "-4",
-            "card-cta-background": "#ffffff",
-            "form-textarea-color": "#0a0a0a",
-            "card-prod-background": "#ffffff",
-            "card-cta-border-color": "#ededed",
-            "card-cta-shadow-color": "#000000",
-            "card-media-background": "#ffffff",
-            "form-input-background": "#ffffff",
-            "card-prod-border-color": "#ffffff",
-            "card-prod-shadow-color": "#000000",
-            "form-select-background": "#ffffff",
-            "btn-pr-background-hover": "-8",
-            "btn-se-background-hover": "-4",
-            "card-media-border-color": "#ededed",
-            "card-media-shadow-color": "#000000",
-            "card-pricing-background": "#ffffff",
-            "form-input-border-color": "#d4d4d4",
-            "card-featured-background": "#ffffff",
-            "form-select-border-color": "#d4d4d4",
-            "form-textarea-background": "#ffffff",
-            "card-pricing-border-color": "#ededed",
-            "card-pricing-shadow-color": "#000000",
-            "card-featured-border-color": "#ededed",
-            "card-featured-shadow-color": "#000000",
-            "form-textarea-border-color": "#d4d4d4"
-        }
-        },
-        {
-        "id": "dark",
-        "name": "dark",
-        "label": "Dark",
-        "value": {
-            "text": "#8f9bb3",
-            "accent": "#ffffff",
-            "heading": "#ffffff",
-            "background": "#000919",
-            "btn-pr-label": "#ffffff",
-            "btn-se-label": "#ffffff",
-            "btn-te-label": "#ffffff",
-            "btn-pr-border": "#0055ff",
-            "btn-se-border": "#646973",
-            "form-input-color": "#fafafa",
-            "btn-pr-background": "#0055ff",
-            "btn-se-background": "transparent",
-            "form-select-color": "#fafafa",
-            "btn-pr-label-hover": "0",
-            "btn-se-label-hover": "0",
-            "btn-te-label-hover": "-8",
-            "btn-pr-border-hover": "-8",
-            "btn-se-border-hover": "-4",
-            "card-cta-background": "#001133",
-            "form-textarea-color": "#fafafa",
-            "card-prod-background": "#000919",
-            "card-cta-border-color": "#3e485b",
-            "card-cta-shadow-color": "#000000",
-            "card-media-background": "#001133",
-            "form-input-background": "#171717",
-            "card-prod-border-color": "#000919",
-            "card-prod-shadow-color": "#000000",
-            "form-select-background": "#171717",
-            "btn-pr-background-hover": "-8",
-            "btn-se-background-hover": "-4",
-            "card-media-border-color": "#3e485b",
-            "card-media-shadow-color": "#000000",
-            "card-pricing-background": "#001133",
-            "form-input-border-color": "#404040",
-            "card-featured-background": "#000919",
-            "form-select-border-color": "#404040",
-            "form-textarea-background": "#171717",
-            "card-pricing-border-color": "#3e485b",
-            "card-pricing-shadow-color": "#000000",
-            "card-featured-border-color": "#3e485b",
-            "card-featured-shadow-color": "#000000",
-            "form-textarea-border-color": "#404040"
-        }
-        },
-        {
-        "id": "accent",
-        "name": "accent",
-        "label": "Accent",
-        "value": {
-            "text": "#ffffff",
-            "accent": "#ffffff",
-            "heading": "#ffffff",
-            "background": "#003399",
-            "btn-pr-label": "#003399",
-            "btn-se-label": "#ffffff",
-            "btn-te-label": "#ffffff",
-            "btn-pr-border": "#ffffff",
-            "btn-se-border": "#6c80a7",
-            "form-input-color": "#ffffff",
-            "btn-pr-background": "#ffffff",
-            "btn-se-background": "transparent",
-            "form-select-color": "#ffffff",
-            "btn-pr-label-hover": "0",
-            "btn-se-label-hover": "0",
-            "btn-te-label-hover": "-8",
-            "btn-pr-border-hover": "-8",
-            "btn-se-border-hover": "-4",
-            "card-cta-background": "#002266",
-            "form-textarea-color": "#ffffff",
-            "card-prod-background": "#003399",
-            "card-cta-border-color": "#3377ff",
-            "card-cta-shadow-color": "#000000",
-            "card-media-background": "#002266",
-            "form-input-background": "#262626",
-            "card-prod-border-color": "#003399",
-            "card-prod-shadow-color": "#000000",
-            "form-select-background": "#262626",
-            "btn-pr-background-hover": "-8",
-            "btn-se-background-hover": "-4",
-            "card-media-border-color": "#3377ff",
-            "card-media-shadow-color": "#000000",
-            "card-pricing-background": "#002266",
-            "form-input-border-color": "#525252",
-            "card-featured-background": "#003399",
-            "form-select-border-color": "#525252",
-            "form-textarea-background": "#262626",
-            "card-pricing-border-color": "#3377ff",
-            "card-pricing-shadow-color": "#000000",
-            "card-featured-border-color": "#3377ff",
-            "card-featured-shadow-color": "#000000",
-            "form-textarea-border-color": "#525252"
-        }
-        },
-        {
-        "id": "muted",
-        "name": "muted",
-        "label": "Muted",
-        "value": {
-            "text": "#404040",
-            "accent": "#171717",
-            "heading": "#0a0a0a",
-            "background": "#fafafa",
-            "btn-pr-label": "#ffffff",
-            "btn-se-label": "#0a0a0a",
-            "btn-te-label": "#0a0a0a",
-            "btn-pr-border": "#0a0a0a",
-            "btn-se-border": "#0a0a0a",
-            "form-input-color": "#0a0a0a",
-            "btn-pr-background": "#0a0a0a",
-            "btn-se-background": "#ffffff",
-            "form-select-color": "#0a0a0a",
-            "btn-pr-label-hover": "0",
-            "btn-se-label-hover": "0",
-            "btn-te-label-hover": "-8",
-            "btn-pr-border-hover": "-8",
-            "btn-se-border-hover": "-4",
-            "card-cta-background": "#ffffff",
-            "form-textarea-color": "#0a0a0a",
-            "card-prod-background": "#fafafa",
-            "card-cta-border-color": "#e5e5e5",
-            "card-cta-shadow-color": "#000000",
-            "card-media-background": "#ffffff",
-            "form-input-background": "#ffffff",
-            "card-prod-border-color": "#e5e5e5",
-            "card-prod-shadow-color": "#000000",
-            "form-select-background": "#ffffff",
-            "btn-pr-background-hover": "-8",
-            "btn-se-background-hover": "-4",
-            "card-media-border-color": "#e5e5e5",
-            "card-media-shadow-color": "#000000",
-            "card-pricing-background": "#ffffff",
-            "form-input-border-color": "#d4d4d4",
-            "card-featured-background": "#fafafa",
-            "form-select-border-color": "#d4d4d4",
-            "form-textarea-background": "#ffffff",
-            "card-pricing-border-color": "#e5e5e5",
-            "card-pricing-shadow-color": "#000000",
-            "card-featured-border-color": "#e5e5e5",
-            "card-featured-shadow-color": "#000000",
-            "form-textarea-border-color": "#d4d4d4"
-        }
-        },
-        {
-        "id": "other",
-        "name": "badge",
-        "label": "Badge",
-        "value": {
-            "sale-bg": "#d82727",
-            "tag-1-bg": "#002266",
-            "tag-2-bg": "#c7daff",
-            "sale-text": "#ffffff",
-            "sale-price": "#d82727",
-            "tag-1-text": "#ffffff",
-            "tag-2-text": "#000919",
-            "sold-out-bg": "#adadad",
-            "sold-out-text": "#ffffff",
-            "btn-pr-label-hover": "0",
-            "btn-se-label-hover": "0",
-            "btn-te-label-hover": "-8",
-            "btn-pr-border-hover": "-8",
-            "btn-se-border-hover": "-4",
-            "btn-pr-background-hover": "-8",
-            "btn-se-background-hover": "-4"
-        }
-        }
-    ],
-    "typography": [
-        {
-        "id": "h1",
-        "name": "h1",
-        "label": "Heading 1",
-        "value": {
-            "fontSize": 58,
-            "fontStyle": "Normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.2,
-            "letterSpacing": -0.02,
-            "textTransform": "capitalize",
-            "fontSize_mobile": 42,
-            "fontSize_tablet": 50,
-            "lineHeight_mobile": 1.2,
-            "lineHeight_tablet": 1.2,
-            "letterSpacing_mobile": -0.02,
-            "letterSpacing_tablet": -0.02
-        }
-        },
-        {
-        "id": "h2",
-        "name": "h2",
-        "label": "Heading 2",
-        "value": {
-            "fontSize": 42,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.2,
-            "letterSpacing": -0.01,
-            "textTransform": "capitalize",
-            "fontSize_mobile": 34,
-            "fontSize_tablet": 38,
-            "lineHeight_mobile": 1.2,
-            "lineHeight_tablet": 1.2,
-            "letterSpacing_mobile": -0.01,
-            "letterSpacing_tablet": -0.01
-        }
-        },
-        {
-        "id": "h3",
-        "name": "h3",
-        "label": "Heading 3",
-        "value": {
-            "fontSize": 34,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.3,
-            "letterSpacing": -0.01,
-            "textTransform": "capitalize",
-            "fontSize_mobile": 26,
-            "fontSize_tablet": 30,
-            "lineHeight_mobile": 1.3,
-            "lineHeight_tablet": 1.3,
-            "letterSpacing_mobile": -0.01,
-            "letterSpacing_tablet": -0.01
-        }
-        },
-        {
-        "id": "h4",
-        "name": "h4",
-        "label": "Heading 4",
-        "value": {
-            "fontSize": 24,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.4,
-            "letterSpacing": -0.01,
-            "textTransform": "capitalize",
-            "fontSize_mobile": 20,
-            "fontSize_tablet": 22,
-            "lineHeight_mobile": 1.4,
-            "lineHeight_tablet": 1.4,
-            "letterSpacing_mobile": -0.01,
-            "letterSpacing_tablet": -0.01
-        }
-        },
-        {
-        "id": "h5",
-        "name": "h5",
-        "label": "Heading 5",
-        "value": {
-            "fontSize": 20,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.5,
-            "letterSpacing": 0,
-            "textTransform": "capitalize",
-            "fontSize_mobile": 18,
-            "fontSize_tablet": 19,
-            "lineHeight_mobile": 1.5,
-            "lineHeight_tablet": 1.5,
-            "letterSpacing_mobile": 0,
-            "letterSpacing_tablet": 0
-        }
-        },
-        {
-        "id": "p1",
-        "name": "p1",
-        "label": "Paragraph 1",
-        "value": {
-            "fontSize": 16,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.5,
-            "letterSpacing": 0,
-            "textTransform": "none",
-            "fontSize_mobile": 17,
-            "fontSize_tablet": 18,
-            "lineHeight_mobile": 1.5,
-            "lineHeight_tablet": 1.5,
-            "letterSpacing_mobile": 0,
-            "letterSpacing_tablet": 0
-        }
-        },
-        {
-        "id": "p2",
-        "name": "p2",
-        "label": "Paragraph 2",
-        "value": {
-            "fontSize": 14,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.5,
-            "letterSpacing": 0,
-            "textTransform": "none",
-            "fontSize_mobile": 15,
-            "fontSize_tablet": 16,
-            "lineHeight_mobile": 1.5,
-            "lineHeight_tablet": 1.5,
-            "letterSpacing_mobile": 0,
-            "letterSpacing_tablet": 0
-        }
-        },
-        {
-        "id": "p3",
-        "name": "p3",
-        "label": "Paragraph 3",
-        "value": {
-            "fontSize": 12,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "400"
-            ]
-            },
-            "fontWeight": 400,
-            "lineHeight": 1.5,
-            "letterSpacing": 0,
-            "textTransform": "none",
-            "fontSize_mobile": 13,
-            "fontSize_tablet": 14,
-            "lineHeight_mobile": 1.5,
-            "lineHeight_tablet": 1.5,
-            "letterSpacing_mobile": 0,
-            "letterSpacing_tablet": 0
-        }
-        },
-        {
-        "id": "eyebrow",
-        "name": "eyebrow",
-        "label": "Eyebrow",
-        "value": {
-            "fontSize": 13,
-            "fontStyle": "normal",
-            "fontFamily": {
-            "axes": [
-                {
-                "max": 800,
-                "min": 200,
-                "tag": "wght",
-                "defaultValue": 400
-                }
-            ],
-            "family": "IBM Plex Sans",
-            "source": "google",
-            "variants": [
-                "500"
-            ]
-            },
-            "fontWeight": 500,
-            "lineHeight": 1.5,
-            "letterSpacing": 0.2,
-            "textTransform": "uppercase",
-            "fontSize_mobile": 12,
-            "fontSize_tablet": 13,
-            "lineHeight_mobile": 1.5,
-            "lineHeight_tablet": 1.5,
-            "letterSpacing_mobile": 0.2,
-            "letterSpacing_tablet": 0.1
-        }
-        }
-    ],
-    "buttons": [
-        {
-        "id": "primary",
-        "name": "btn-pr",
-        "label": "Primary",
-        "value": {
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "shadowTransparent": 0,
-            "borderWidth_mobile": 1,
-            "borderWidth_tablet": 1
-        }
-        },
-        {
-        "id": "secondary",
-        "name": "btn-se",
-        "label": "Secondary",
-        "value": {
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "shadowTransparent": 0,
-            "borderWidth_mobile": 1,
-            "borderWidth_tablet": 1
-        }
-        },
-        {
-        "id": "tertiary",
-        "name": "btn-te",
-        "label": "Tertiary",
-        "value": {
-            "icon": "",
-            "underline": true,
-            "underlineOffset": 4
-        }
-        },
-        {
-        "id": "button",
-        "name": "btn",
-        "label": "Button",
-        "value": {
-            "height": 48,
-            "padding": 30,
-            "fontSize": 14,
-            "fontWeight": 400,
-            "borderRadius": 4,
-            "height_mobile": 45,
-            "height_tablet": 45,
-            "letterSpacing": 1,
-            "textTransform": "None",
-            "padding_mobile": 30,
-            "padding_tablet": 30,
-            "fontSize_mobile": 15,
-            "fontSize_tablet": 15,
-            "transition_hover": 150
-        }
-        }
-    ],
-    "cards": [
-        {
-        "id": "featured",
-        "label": "Featured",
-        "value": {
-            "gap": 4,
-            "padding": 4,
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "backdropBlur": 0,
-            "borderRadius": 6,
-            "backdropSaturate": 0,
-            "shadowTransparent": 0
-        }
-        },
-        {
-        "id": "product",
-        "label": "Product",
-        "value": {
-            "gap": 3,
-            "padding": 4,
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "backdropBlur": 0,
-            "borderRadius": 6,
-            "backdropSaturate": 0,
-            "shadowTransparent": 0
-        }
-        },
-        {
-        "id": "pricing",
-        "label": "Pricing",
-        "value": {
-            "gap": 5,
-            "padding": 8,
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "backdropBlur": 0,
-            "borderRadius": 6,
-            "backdropSaturate": 0,
-            "shadowTransparent": 0
-        }
-        },
-        {
-        "id": "cta",
-        "label": "CTA",
-        "value": {
-            "gap": 4,
-            "padding": 10,
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "backdropBlur": 0,
-            "borderRadius": 6,
-            "backdropSaturate": 0,
-            "shadowTransparent": 0
-        }
-        },
-        {
-        "id": "media",
-        "label": "Media",
-        "value": {
-            "gap": 0,
-            "padding": 0,
-            "shadowX": 0,
-            "shadowY": 0,
-            "shadowBlur": 0,
-            "borderWidth": 1,
-            "backdropBlur": 0,
-            "borderRadius": 6,
-            "backdropSaturate": 0,
-            "shadowTransparent": 0
-        }
-        }
-    ],
-    "badges": [
-        {
-        "id": "default",
-        "label": "Default",
-        "value": {
-            "padding": 2,
-            "borderWidth": 1,
-            "borderRadius": 4
-        }
-        }
-    ],
-    "forms": [
-        {
-        "id": "input",
-        "label": "Input",
-        "value": {
-            "height": 4,
-            "padding": 4,
-            "borderWidth": 1,
-            "borderRadius": 6
-        }
-        },
-        {
-        "id": "select",
-        "label": "Select",
-        "value": {
-            "height": 4,
-            "padding": 4,
-            "borderWidth": 1,
-            "borderRadius": 6
-        }
-        },
-        {
-        "id": "textarea",
-        "label": "Textarea",
-        "value": {
-            "height": 4,
-            "padding": 4,
-            "borderWidth": 1,
-            "borderRadius": 6
-        }
-        }
-    ],
-    "spacings": [
-        {
-        "id": "section",
-        "label": "Section",
-        "value": {
-            "width": 1440,
-            "paddingX": 10,
-            "paddingY": 72,
-            "paddingX_mobile": 5,
-            "paddingX_tablet": 8,
-            "paddingY_mobile": 40,
-            "paddingY_tablet": 16
-        }
-        },
-        {
-        "id": "slot",
-        "label": "Slot",
-        "value": {
-            "gap": 32,
-            "paddingX": 0,
-            "paddingY": 0,
-            "gap_mobile": 16,
-            "gap_tablet": 8,
-            "paddingX_mobile": 0,
-            "paddingX_tablet": 0,
-            "paddingY_mobile": 0,
-            "paddingY_tablet": 0
-        }
-        },
-        {
-        "id": "grid",
-        "label": "Grid",
-        "value": {
-            "gap": 20,
-            "gap_mobile": 12,
-            "gap_tablet": 5
-        }
-        }
-    ]
+  "colors": [
+    {
+      "id": "light",
+      "name": "default",
+      "label": "Default",
+      "value": {
+        "text": "#53585f",
+        "accent": "#0055ff",
+        "heading": "#000919",
+        "background": "#ffffff",
+        "btn-pr-label": "#ffffff",
+        "btn-se-label": "#0055ff",
+        "btn-te-label": "#0055ff",
+        "btn-pr-border": "#0055ff",
+        "btn-se-border": "#99bbff",
+        "form-input-color": "#0a0a0a",
+        "btn-pr-background": "#0055ff",
+        "btn-se-background": "transparent",
+        "form-select-color": "#0a0a0a",
+        "btn-pr-label-hover": "0",
+        "btn-se-label-hover": "0",
+        "btn-te-label-hover": "-8",
+        "btn-pr-border-hover": "-8",
+        "btn-se-border-hover": "-4",
+        "card-cta-background": "#ffffff",
+        "form-textarea-color": "#0a0a0a",
+        "card-prod-background": "#ffffff",
+        "card-cta-border-color": "#ededed",
+        "card-cta-shadow-color": "#000000",
+        "card-media-background": "#ffffff",
+        "form-input-background": "#ffffff",
+        "card-prod-border-color": "#ffffff",
+        "card-prod-shadow-color": "#000000",
+        "form-select-background": "#ffffff",
+        "btn-pr-background-hover": "-8",
+        "btn-se-background-hover": "-4",
+        "card-media-border-color": "#ededed",
+        "card-media-shadow-color": "#000000",
+        "card-pricing-background": "#ffffff",
+        "form-input-border-color": "#d4d4d4",
+        "card-featured-background": "#ffffff",
+        "form-select-border-color": "#d4d4d4",
+        "form-textarea-background": "#ffffff",
+        "card-pricing-border-color": "#ededed",
+        "card-pricing-shadow-color": "#000000",
+        "card-featured-border-color": "#ededed",
+        "card-featured-shadow-color": "#000000",
+        "form-textarea-border-color": "#d4d4d4"
+      }
+    },
+    {
+      "id": "dark",
+      "name": "dark",
+      "label": "Dark",
+      "value": {
+        "text": "#8f9bb3",
+        "accent": "#ffffff",
+        "heading": "#ffffff",
+        "background": "#000919",
+        "btn-pr-label": "#ffffff",
+        "btn-se-label": "#ffffff",
+        "btn-te-label": "#ffffff",
+        "btn-pr-border": "#0055ff",
+        "btn-se-border": "#646973",
+        "form-input-color": "#fafafa",
+        "btn-pr-background": "#0055ff",
+        "btn-se-background": "transparent",
+        "form-select-color": "#fafafa",
+        "btn-pr-label-hover": "0",
+        "btn-se-label-hover": "0",
+        "btn-te-label-hover": "-8",
+        "btn-pr-border-hover": "-8",
+        "btn-se-border-hover": "-4",
+        "card-cta-background": "#001133",
+        "form-textarea-color": "#fafafa",
+        "card-prod-background": "#000919",
+        "card-cta-border-color": "#3e485b",
+        "card-cta-shadow-color": "#000000",
+        "card-media-background": "#001133",
+        "form-input-background": "#171717",
+        "card-prod-border-color": "#000919",
+        "card-prod-shadow-color": "#000000",
+        "form-select-background": "#171717",
+        "btn-pr-background-hover": "-8",
+        "btn-se-background-hover": "-4",
+        "card-media-border-color": "#3e485b",
+        "card-media-shadow-color": "#000000",
+        "card-pricing-background": "#001133",
+        "form-input-border-color": "#404040",
+        "card-featured-background": "#000919",
+        "form-select-border-color": "#404040",
+        "form-textarea-background": "#171717",
+        "card-pricing-border-color": "#3e485b",
+        "card-pricing-shadow-color": "#000000",
+        "card-featured-border-color": "#3e485b",
+        "card-featured-shadow-color": "#000000",
+        "form-textarea-border-color": "#404040"
+      }
+    },
+    {
+      "id": "accent",
+      "name": "accent",
+      "label": "Accent",
+      "value": {
+        "text": "#ffffff",
+        "accent": "#ffffff",
+        "heading": "#ffffff",
+        "background": "#003399",
+        "btn-pr-label": "#003399",
+        "btn-se-label": "#ffffff",
+        "btn-te-label": "#ffffff",
+        "btn-pr-border": "#ffffff",
+        "btn-se-border": "#6c80a7",
+        "form-input-color": "#ffffff",
+        "btn-pr-background": "#ffffff",
+        "btn-se-background": "transparent",
+        "form-select-color": "#ffffff",
+        "btn-pr-label-hover": "0",
+        "btn-se-label-hover": "0",
+        "btn-te-label-hover": "-8",
+        "btn-pr-border-hover": "-8",
+        "btn-se-border-hover": "-4",
+        "card-cta-background": "#002266",
+        "form-textarea-color": "#ffffff",
+        "card-prod-background": "#003399",
+        "card-cta-border-color": "#3377ff",
+        "card-cta-shadow-color": "#000000",
+        "card-media-background": "#002266",
+        "form-input-background": "#262626",
+        "card-prod-border-color": "#003399",
+        "card-prod-shadow-color": "#000000",
+        "form-select-background": "#262626",
+        "btn-pr-background-hover": "-8",
+        "btn-se-background-hover": "-4",
+        "card-media-border-color": "#3377ff",
+        "card-media-shadow-color": "#000000",
+        "card-pricing-background": "#002266",
+        "form-input-border-color": "#525252",
+        "card-featured-background": "#003399",
+        "form-select-border-color": "#525252",
+        "form-textarea-background": "#262626",
+        "card-pricing-border-color": "#3377ff",
+        "card-pricing-shadow-color": "#000000",
+        "card-featured-border-color": "#3377ff",
+        "card-featured-shadow-color": "#000000",
+        "form-textarea-border-color": "#525252"
+      }
+    },
+    {
+      "id": "muted",
+      "name": "muted",
+      "label": "Muted",
+      "value": {
+        "text": "#404040",
+        "accent": "#171717",
+        "heading": "#0a0a0a",
+        "background": "#fafafa",
+        "btn-pr-label": "#ffffff",
+        "btn-se-label": "#0a0a0a",
+        "btn-te-label": "#0a0a0a",
+        "btn-pr-border": "#0a0a0a",
+        "btn-se-border": "#0a0a0a",
+        "form-input-color": "#0a0a0a",
+        "btn-pr-background": "#0a0a0a",
+        "btn-se-background": "#ffffff",
+        "form-select-color": "#0a0a0a",
+        "btn-pr-label-hover": "0",
+        "btn-se-label-hover": "0",
+        "btn-te-label-hover": "-8",
+        "btn-pr-border-hover": "-8",
+        "btn-se-border-hover": "-4",
+        "card-cta-background": "#ffffff",
+        "form-textarea-color": "#0a0a0a",
+        "card-prod-background": "#fafafa",
+        "card-cta-border-color": "#e5e5e5",
+        "card-cta-shadow-color": "#000000",
+        "card-media-background": "#ffffff",
+        "form-input-background": "#ffffff",
+        "card-prod-border-color": "#e5e5e5",
+        "card-prod-shadow-color": "#000000",
+        "form-select-background": "#ffffff",
+        "btn-pr-background-hover": "-8",
+        "btn-se-background-hover": "-4",
+        "card-media-border-color": "#e5e5e5",
+        "card-media-shadow-color": "#000000",
+        "card-pricing-background": "#ffffff",
+        "form-input-border-color": "#d4d4d4",
+        "card-featured-background": "#fafafa",
+        "form-select-border-color": "#d4d4d4",
+        "form-textarea-background": "#ffffff",
+        "card-pricing-border-color": "#e5e5e5",
+        "card-pricing-shadow-color": "#000000",
+        "card-featured-border-color": "#e5e5e5",
+        "card-featured-shadow-color": "#000000",
+        "form-textarea-border-color": "#d4d4d4"
+      }
+    },
+    {
+      "id": "other",
+      "name": "badge",
+      "label": "Badge",
+      "value": {
+        "sale-bg": "#d82727",
+        "tag-1-bg": "#002266",
+        "tag-2-bg": "#c7daff",
+        "sale-text": "#ffffff",
+        "sale-price": "#d82727",
+        "tag-1-text": "#ffffff",
+        "tag-2-text": "#000919",
+        "sold-out-bg": "#adadad",
+        "sold-out-text": "#ffffff",
+        "btn-pr-label-hover": "0",
+        "btn-se-label-hover": "0",
+        "btn-te-label-hover": "-8",
+        "btn-pr-border-hover": "-8",
+        "btn-se-border-hover": "-4",
+        "btn-pr-background-hover": "-8",
+        "btn-se-background-hover": "-4"
+      }
     }
-;
+  ],
+  "typography": [
+    {
+      "id": "h1",
+      "name": "h1",
+      "label": "Heading 1",
+      "value": {
+        "fontSize": 58,
+        "fontStyle": "Normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.2,
+        "letterSpacing": -0.02,
+        "textTransform": "capitalize",
+        "fontSize_mobile": 42,
+        "fontSize_tablet": 50,
+        "lineHeight_mobile": 1.2,
+        "lineHeight_tablet": 1.2,
+        "letterSpacing_mobile": -0.02,
+        "letterSpacing_tablet": -0.02
+      }
+    },
+    {
+      "id": "h2",
+      "name": "h2",
+      "label": "Heading 2",
+      "value": {
+        "fontSize": 42,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.2,
+        "letterSpacing": -0.01,
+        "textTransform": "capitalize",
+        "fontSize_mobile": 34,
+        "fontSize_tablet": 38,
+        "lineHeight_mobile": 1.2,
+        "lineHeight_tablet": 1.2,
+        "letterSpacing_mobile": -0.01,
+        "letterSpacing_tablet": -0.01
+      }
+    },
+    {
+      "id": "h3",
+      "name": "h3",
+      "label": "Heading 3",
+      "value": {
+        "fontSize": 34,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.3,
+        "letterSpacing": -0.01,
+        "textTransform": "capitalize",
+        "fontSize_mobile": 26,
+        "fontSize_tablet": 30,
+        "lineHeight_mobile": 1.3,
+        "lineHeight_tablet": 1.3,
+        "letterSpacing_mobile": -0.01,
+        "letterSpacing_tablet": -0.01
+      }
+    },
+    {
+      "id": "h4",
+      "name": "h4",
+      "label": "Heading 4",
+      "value": {
+        "fontSize": 24,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.4,
+        "letterSpacing": -0.01,
+        "textTransform": "capitalize",
+        "fontSize_mobile": 20,
+        "fontSize_tablet": 22,
+        "lineHeight_mobile": 1.4,
+        "lineHeight_tablet": 1.4,
+        "letterSpacing_mobile": -0.01,
+        "letterSpacing_tablet": -0.01
+      }
+    },
+    {
+      "id": "h5",
+      "name": "h5",
+      "label": "Heading 5",
+      "value": {
+        "fontSize": 20,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": 0,
+        "textTransform": "capitalize",
+        "fontSize_mobile": 18,
+        "fontSize_tablet": 19,
+        "lineHeight_mobile": 1.5,
+        "lineHeight_tablet": 1.5,
+        "letterSpacing_mobile": 0,
+        "letterSpacing_tablet": 0
+      }
+    },
+    {
+      "id": "p1",
+      "name": "p1",
+      "label": "Paragraph 1",
+      "value": {
+        "fontSize": 16,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "fontSize_mobile": 17,
+        "fontSize_tablet": 18,
+        "lineHeight_mobile": 1.5,
+        "lineHeight_tablet": 1.5,
+        "letterSpacing_mobile": 0,
+        "letterSpacing_tablet": 0
+      }
+    },
+    {
+      "id": "p2",
+      "name": "p2",
+      "label": "Paragraph 2",
+      "value": {
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "fontSize_mobile": 15,
+        "fontSize_tablet": 16,
+        "lineHeight_mobile": 1.5,
+        "lineHeight_tablet": 1.5,
+        "letterSpacing_mobile": 0,
+        "letterSpacing_tablet": 0
+      }
+    },
+    {
+      "id": "p3",
+      "name": "p3",
+      "label": "Paragraph 3",
+      "value": {
+        "fontSize": 12,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "400"
+          ]
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.5,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "fontSize_mobile": 13,
+        "fontSize_tablet": 14,
+        "lineHeight_mobile": 1.5,
+        "lineHeight_tablet": 1.5,
+        "letterSpacing_mobile": 0,
+        "letterSpacing_tablet": 0
+      }
+    },
+    {
+      "id": "eyebrow",
+      "name": "eyebrow",
+      "label": "Eyebrow",
+      "value": {
+        "fontSize": 13,
+        "fontStyle": "normal",
+        "fontFamily": {
+          "axes": [
+            {
+              "max": 800,
+              "min": 200,
+              "tag": "wght",
+              "defaultValue": 400
+            }
+          ],
+          "family": "IBM Plex Sans",
+          "source": "google",
+          "variants": [
+            "500"
+          ]
+        },
+        "fontWeight": 500,
+        "lineHeight": 1.5,
+        "letterSpacing": 0.2,
+        "textTransform": "uppercase",
+        "fontSize_mobile": 12,
+        "fontSize_tablet": 13,
+        "lineHeight_mobile": 1.5,
+        "lineHeight_tablet": 1.5,
+        "letterSpacing_mobile": 0.2,
+        "letterSpacing_tablet": 0.1
+      }
+    }
+  ],
+  "buttons": [
+    {
+      "id": "primary",
+      "name": "btn-pr",
+      "label": "Primary",
+      "value": {
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "shadowTransparent": 0,
+        "borderWidth_mobile": 1,
+        "borderWidth_tablet": 1
+      }
+    },
+    {
+      "id": "secondary",
+      "name": "btn-se",
+      "label": "Secondary",
+      "value": {
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "shadowTransparent": 0,
+        "borderWidth_mobile": 1,
+        "borderWidth_tablet": 1
+      }
+    },
+    {
+      "id": "tertiary",
+      "name": "btn-te",
+      "label": "Tertiary",
+      "value": {
+        "icon": "",
+        "underline": true,
+        "underlineOffset": 4
+      }
+    },
+    {
+      "id": "button",
+      "name": "btn",
+      "label": "Button",
+      "value": {
+        "height": 48,
+        "padding": 30,
+        "fontSize": 14,
+        "fontWeight": 400,
+        "borderRadius": 4,
+        "height_mobile": 45,
+        "height_tablet": 45,
+        "letterSpacing": 1,
+        "textTransform": "None",
+        "padding_mobile": 30,
+        "padding_tablet": 30,
+        "fontSize_mobile": 15,
+        "fontSize_tablet": 15,
+        "transition_hover": 150
+      }
+    }
+  ],
+  "cards": [
+    {
+      "id": "featured",
+      "label": "Featured",
+      "value": {
+        "gap": 4,
+        "padding": 4,
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "backdropBlur": 0,
+        "borderRadius": 6,
+        "backdropSaturate": 0,
+        "shadowTransparent": 0
+      }
+    },
+    {
+      "id": "product",
+      "label": "Product",
+      "value": {
+        "gap": 3,
+        "padding": 4,
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "backdropBlur": 0,
+        "borderRadius": 6,
+        "backdropSaturate": 0,
+        "shadowTransparent": 0
+      }
+    },
+    {
+      "id": "pricing",
+      "label": "Pricing",
+      "value": {
+        "gap": 5,
+        "padding": 8,
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "backdropBlur": 0,
+        "borderRadius": 6,
+        "backdropSaturate": 0,
+        "shadowTransparent": 0
+      }
+    },
+    {
+      "id": "cta",
+      "label": "CTA",
+      "value": {
+        "gap": 4,
+        "padding": 10,
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "backdropBlur": 0,
+        "borderRadius": 6,
+        "backdropSaturate": 0,
+        "shadowTransparent": 0
+      }
+    },
+    {
+      "id": "media",
+      "label": "Media",
+      "value": {
+        "gap": 0,
+        "padding": 0,
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0,
+        "borderWidth": 1,
+        "backdropBlur": 0,
+        "borderRadius": 6,
+        "backdropSaturate": 0,
+        "shadowTransparent": 0
+      }
+    }
+  ],
+  "badges": [
+    {
+      "id": "default",
+      "label": "Default",
+      "value": {
+        "padding": 2,
+        "borderWidth": 1,
+        "borderRadius": 4
+      }
+    }
+  ],
+  "forms": [
+    {
+      "id": "input",
+      "label": "Input",
+      "value": {
+        "height": 4,
+        "padding": 4,
+        "borderWidth": 1,
+        "borderRadius": 6
+      }
+    },
+    {
+      "id": "select",
+      "label": "Select",
+      "value": {
+        "height": 4,
+        "padding": 4,
+        "borderWidth": 1,
+        "borderRadius": 6
+      }
+    },
+    {
+      "id": "textarea",
+      "label": "Textarea",
+      "value": {
+        "height": 4,
+        "padding": 4,
+        "borderWidth": 1,
+        "borderRadius": 6
+      }
+    }
+  ],
+  "spacings": [
+    {
+      "id": "section",
+      "label": "Section",
+      "value": {
+        "width": 1440,
+        "paddingX": 10,
+        "paddingY": 72,
+        "paddingX_mobile": 5,
+        "paddingX_tablet": 8,
+        "paddingY_mobile": 40,
+        "paddingY_tablet": 16
+      }
+    },
+    {
+      "id": "slot",
+      "label": "Slot",
+      "value": {
+        "gap": 32,
+        "paddingX": 0,
+        "paddingY": 0,
+        "gap_mobile": 16,
+        "gap_tablet": 8,
+        "paddingX_mobile": 0,
+        "paddingX_tablet": 0,
+        "paddingY_mobile": 0,
+        "paddingY_tablet": 0
+      }
+    },
+    {
+      "id": "grid",
+      "label": "Grid",
+      "value": {
+        "gap": 20,
+        "gap_mobile": 12,
+        "gap_tablet": 5
+      }
+    }
+  ]
+};
     
     function clone(data){
         return JSON.parse(JSON.stringify(data));
@@ -847,11 +846,8 @@ button{
     }
     
     function deepMerge(target, source){
-    
         const result = clone(target);
-    
         Object.keys(source).forEach(key => {
-    
             const sourceValue = source[key];
             const targetValue = result[key];
     
@@ -866,191 +862,148 @@ button{
             }else{
                 result[key] = clone(sourceValue);
             }
-    
         });
-    
         return result;
     }
     
     function mergeArrayById(
         source,
         target,
-        mapping = {}
+        mapping = {},
+        keepOriginalName = false // Thêm cờ điều kiện giữ nguyên thuộc tính name ban đầu
     ){
-    
-        source = Array.isArray(source)
-            ? source
-            : [];
-    
-        target = Array.isArray(target)
-            ? target
-            : [];
+        source = Array.isArray(source) ? source : [];
+        target = Array.isArray(target) ? target : [];
     
         const map = new Map();
-    
         source.forEach(item => {
-    
-            const id =
-                mapping[item.id] || item.id;
-    
-            map.set(id,{
+            const id = mapping[item.id] || item.id;
+            
+            // Khởi tạo object map mới
+            const mappedItem = {
                 ...item,
-                id,
-                name:id
-            });
-    
+                id
+            };
+            
+            // Nếu không giữ name cũ, mặc định sẽ gán name bằng id
+            if (!keepOriginalName) {
+                mappedItem.name = id;
+            }
+
+            map.set(id, mappedItem);
         });
     
         return target.map(item => {
-    
-            const sourceItem =
-                map.get(item.id);
-    
+            const sourceItem = map.get(item.id);
             if(!sourceItem){
                 return clone(item);
             }
-    
-            return deepMerge(
-                item,
-                sourceItem
-            );
-    
+            return deepMerge(item, sourceItem);
         });
-    
     }
     
     function createDarkFromScheme3(
         scheme3,
         darkDefault
     ){
-    
         return {
             ...clone(darkDefault),
-    
-            value:{
+            value: {
                 ...clone(darkDefault.value),
-    
                 ...clone(scheme3.value),
-    
-                background:
-                    darkDefault.value.background
+                background: darkDefault.value.background
             }
         };
     }
     
     function convertTheme(v1){
+        const result = clone(DEFAULT_V2);
     
-        const result =
-            clone(DEFAULT_V2);
-    
-        result.colors =
-            mergeArrayById(
-                v1.colors,
-                result.colors,
-                {
-                    "scheme-1":"light",
-                    "scheme-2":"muted",
-                    "scheme-3":"accent",
-                    "other":"other"
-                }
-            );
-    
-        result.typography =
-            mergeArrayById(
-                v1.typography,
-                result.typography,
-                {
-                    "p":"p1"
-                }
-            );
-    
-        result.buttons =
-            mergeArrayById(
-                v1.buttons,
-                result.buttons
-            );
-    
-        const scheme3 =
-            v1.colors?.find(
-                item =>
-                    item.id ===
-                    "scheme-3"
-            );
-    
-        if(scheme3){
-    
-            const darkIndex =
-                result.colors.findIndex(
-                    item =>
-                        item.id ===
-                        "dark"
-                );
-    
-            if(darkIndex > -1){
-    
-                result.colors[
-                    darkIndex
-                ] =
-                    createDarkFromScheme3(
-                        scheme3,
-                        result.colors[
-                            darkIndex
-                        ]
-                    );
-    
+        // 1. Convert Colors
+        result.colors = mergeArrayById(
+            v1.colors,
+            result.colors,
+            {
+                "scheme-1": "light",
+                "scheme-2": "muted",
+                "scheme-3": "accent",
+                "other": "other"
             }
+        );
     
+        const scheme3 = v1.colors?.find(item => item.id === "scheme-3");
+        if(scheme3){
+            const darkIndex = result.colors.findIndex(item => item.id === "dark");
+            if(darkIndex > -1){
+                result.colors[darkIndex] = createDarkFromScheme3(
+                    scheme3,
+                    result.colors[darkIndex]
+                );
+            }
+        }
+    
+        // 2. Convert Typography
+        result.typography = mergeArrayById(
+            v1.typography,
+            result.typography,
+            {
+                "h1": "h1",
+                "h2": "h2",
+                "h3": "h3",
+                "h4": "h4",
+                "h5": "h5",
+                "p": "p1",
+                "eyebrow": "eyebrow"
+            }
+        );
+    
+        // 3. Convert Buttons (Truyền tham số true để GIỮ NGUYÊN thuộc tính name từ V1)
+        result.buttons = mergeArrayById(
+            v1.buttons,
+            result.buttons,
+            {
+                "primary": "primary",
+                "secondary": "secondary",
+                "tertiary": "tertiary",
+                "button": "button"
+            },
+            true // keepOriginalName = true
+        );
+    
+        // Giới hạn borderRadius tối đa là 50 ở nhóm button
+        const globalButtonIndex = result.buttons.findIndex(item => item.id === "button");
+        if (globalButtonIndex > -1 && result.buttons[globalButtonIndex].value) {
+            let btnVal = result.buttons[globalButtonIndex].value;
+            if (typeof btnVal.borderRadius === 'number') {
+                btnVal.borderRadius = Math.min(btnVal.borderRadius, 50);
+            }
         }
     
         return result;
     }
     
     document
-    .getElementById(
-        "convertBtn"
-    )
+    .getElementById("convertBtn")
     .addEventListener(
         "click",
         () => {
-    
             try{
-    
-                const v1 =
-                    JSON.parse(
-                        document
-                        .getElementById(
-                            "v1"
-                        )
-                        .value
-                    );
-    
-                const result =
-                    convertTheme(
-                        v1
-                    );
-    
-                document
-                .getElementById(
-                    "output"
-                )
-                .value =
-                    JSON.stringify(
-                        result,
-                        null,
-                        2
-                    );
-    
-            }catch(error){
-    
-                alert(
-                    error.message
+                const v1 = JSON.parse(
+                    document.getElementById("v1").value
                 );
     
-            }
+                const result = convertTheme(v1);
     
+                document.getElementById("output").value = JSON.stringify(
+                    result,
+                    null,
+                    2
+                );
+            }catch(error){
+                alert(error.message);
+            }
         }
     );
     </script>
-
 </body>
 </html>
