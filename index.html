@@ -66,19 +66,17 @@ button{
 </style>
 </head>
 <body>
-
-<h2>Theme V1 → V2 Converter</h2>
-
-<div class="container">
-    <div class="panel">
-        <h3>V1</h3>
-        <textarea id="v1"></textarea>
+    <div class="actions">
+        <button id="convertBtn">
+            Convert
+        </button>
     </div>
-
-    <div class="panel">
-        <h3>V2</h3>
-<textarea id="v2">
-{
+    <div class="container">
+        <textarea id="v1" placeholder="Paste V1 JSON"></textarea>
+        <textarea id="output" placeholder="Result"></textarea>
+    </div>
+    <script>
+    const DEFAULT_V2 = {
     "colors": [
         {
         "id": "light",
@@ -834,249 +832,225 @@ button{
         }
     ]
     }
-</textarea>
-    </div>
-</div>
-
-<div class="actions">
-    <button id="convertBtn">
-        Convert
-    </button>
-
-    <button id="downloadBtn">
-        Download
-    </button>
-</div>
-
-<div class="panel">
-    <h3>Result</h3>
-    <textarea id="output"></textarea>
-</div>
-
-<script>
-function clone(data){
-    return JSON.parse(JSON.stringify(data));
-}
-
-function isObject(value){
-    return (
-        value &&
-        typeof value === "object" &&
-        !Array.isArray(value)
-    );
-}
-
-function deepMerge(target, source){
-
-    const result = clone(target);
-
-    Object.keys(source).forEach(key => {
-
-        const sourceValue = source[key];
-        const targetValue = result[key];
-
-        if(
-            isObject(sourceValue) &&
-            isObject(targetValue)
-        ){
-            result[key] = deepMerge(
-                targetValue,
-                sourceValue
-            );
-        }else{
-            result[key] = clone(sourceValue);
-        }
-    });
-
-    return result;
-}
-
-function normalizeV1Item(item, mapping){
-
-    const targetId =
-        mapping[item.id] || item.id;
-
-    return {
-        ...item,
-        id: targetId,
-        name: targetId
-    };
-}
-
-function mergeArrayById(
-    v1Items,
-    v2Items,
-    mapping = {}
-){
-
-    v1Items = Array.isArray(v1Items)
-        ? v1Items
-        : [];
-
-    v2Items = Array.isArray(v2Items)
-        ? v2Items
-        : [];
-
-    const map = new Map();
-
-    v1Items.forEach(item => {
-
-        const normalized =
-            normalizeV1Item(
+;
+    
+    function clone(data){
+        return JSON.parse(JSON.stringify(data));
+    }
+    
+    function isObject(value){
+        return (
+            value &&
+            typeof value === "object" &&
+            !Array.isArray(value)
+        );
+    }
+    
+    function deepMerge(target, source){
+    
+        const result = clone(target);
+    
+        Object.keys(source).forEach(key => {
+    
+            const sourceValue = source[key];
+            const targetValue = result[key];
+    
+            if(
+                isObject(sourceValue) &&
+                isObject(targetValue)
+            ){
+                result[key] = deepMerge(
+                    targetValue,
+                    sourceValue
+                );
+            }else{
+                result[key] = clone(sourceValue);
+            }
+    
+        });
+    
+        return result;
+    }
+    
+    function mergeArrayById(
+        source,
+        target,
+        mapping = {}
+    ){
+    
+        source = Array.isArray(source)
+            ? source
+            : [];
+    
+        target = Array.isArray(target)
+            ? target
+            : [];
+    
+        const map = new Map();
+    
+        source.forEach(item => {
+    
+            const id =
+                mapping[item.id] || item.id;
+    
+            map.set(id,{
+                ...item,
+                id,
+                name:id
+            });
+    
+        });
+    
+        return target.map(item => {
+    
+            const sourceItem =
+                map.get(item.id);
+    
+            if(!sourceItem){
+                return clone(item);
+            }
+    
+            return deepMerge(
                 item,
-                mapping
+                sourceItem
             );
-
-        map.set(
-            normalized.id,
-            normalized
-        );
-    });
-
-    return v2Items.map(v2Item => {
-
-        const v1Item =
-            map.get(v2Item.id);
-
-        if(!v1Item){
-            return clone(v2Item);
-        }
-
-        return deepMerge(
-            v2Item,
-            v1Item
-        );
-    });
-}
-
-function convertTheme(v1, v2){
-
-    return {
-
-        ...clone(v2),
-
-        colors: mergeArrayById(
-            v1.colors,
-            v2.colors,
-            {
-                "scheme-1":"light",
-                "other":"other"
+    
+        });
+    
+    }
+    
+    function createDarkFromScheme3(
+        scheme3,
+        darkDefault
+    ){
+    
+        return {
+            ...clone(darkDefault),
+    
+            value:{
+                ...clone(darkDefault.value),
+    
+                ...clone(scheme3.value),
+    
+                background:
+                    darkDefault.value.background
             }
-        ),
-
-        typography: mergeArrayById(
-            v1.typography,
-            v2.typography,
-            {
-                "p":"p1"
-            }
-        ),
-
-        buttons: mergeArrayById(
-            v1.buttons,
-            v2.buttons
-        ),
-
-        cards: mergeArrayById(
-            v1.cards,
-            v2.cards
-        ),
-
-        badges: mergeArrayById(
-            v1.badges,
-            v2.badges
-        ),
-
-        forms: mergeArrayById(
-            v1.forms,
-            v2.forms
-        ),
-
-        spacings: mergeArrayById(
-            v1.spacings,
-            v2.spacings
-        )
-    };
-}
-
-document
-.getElementById("convertBtn")
-.addEventListener("click", () => {
-
-    try{
-
-        const v1 = JSON.parse(
-            document.getElementById("v1").value
-        );
-
-        const v2 = JSON.parse(
-            document.getElementById("v2").value
-        );
-
+        };
+    }
+    
+    function convertTheme(v1){
+    
         const result =
-            convertTheme(v1, v2);
-
-        document.getElementById(
-            "output"
-        ).value =
-            JSON.stringify(
-                result,
-                null,
-                2
+            clone(DEFAULT_V2);
+    
+        result.colors =
+            mergeArrayById(
+                v1.colors,
+                result.colors,
+                {
+                    "scheme-1":"light",
+                    "scheme-2":"muted",
+                    "scheme-3":"accent",
+                    "other":"other"
+                }
             );
-
-    }catch(error){
-
-        alert(
-            "JSON Error:\n" +
-            error.message
-        );
-    }
-});
-
-document
-.getElementById("downloadBtn")
-.addEventListener("click", () => {
-
-    const output =
-        document.getElementById(
-            "output"
-        ).value;
-
-    if(!output){
-        alert(
-            "Convert first"
-        );
-        return;
-    }
-
-    const blob =
-        new Blob(
-            [output],
-            {
-                type:"application/json"
+    
+        result.typography =
+            mergeArrayById(
+                v1.typography,
+                result.typography,
+                {
+                    "p":"p1"
+                }
+            );
+    
+        result.buttons =
+            mergeArrayById(
+                v1.buttons,
+                result.buttons
+            );
+    
+        const scheme3 =
+            v1.colors?.find(
+                item =>
+                    item.id ===
+                    "scheme-3"
+            );
+    
+        if(scheme3){
+    
+            const darkIndex =
+                result.colors.findIndex(
+                    item =>
+                        item.id ===
+                        "dark"
+                );
+    
+            if(darkIndex > -1){
+    
+                result.colors[
+                    darkIndex
+                ] =
+                    createDarkFromScheme3(
+                        scheme3,
+                        result.colors[
+                            darkIndex
+                        ]
+                    );
+    
             }
-        );
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-    const a =
-        document.createElement(
-            "a"
-        );
-
-    a.href = url;
-    a.download =
-        "theme-v2.json";
-
-    a.click();
-
-    URL.revokeObjectURL(url);
-});
-</script>
+    
+        }
+    
+        return result;
+    }
+    
+    document
+    .getElementById(
+        "convertBtn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+    
+            try{
+    
+                const v1 =
+                    JSON.parse(
+                        document
+                        .getElementById(
+                            "v1"
+                        )
+                        .value
+                    );
+    
+                const result =
+                    convertTheme(
+                        v1
+                    );
+    
+                document
+                .getElementById(
+                    "output"
+                )
+                .value =
+                    JSON.stringify(
+                        result,
+                        null,
+                        2
+                    );
+    
+            }catch(error){
+    
+                alert(
+                    error.message
+                );
+    
+            }
+    
+        }
+    );
+    </script>
 
 </body>
 </html>
