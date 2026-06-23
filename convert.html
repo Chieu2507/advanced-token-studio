@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Spacing Gap Formatter (/4)</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        header h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        header p {
+            color: #7f8c8d;
+            margin: 0;
+            font-size: 14px;
+        }
+        .workspace {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        textarea {
+            width: 100%;
+            height: 480px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            resize: vertical;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #fff;
+        }
+        .actions {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            padding: 12px 35px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+        button:hover {
+            background-color: #059669;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #logPanel {
+            margin-top: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+        .log-success { color: #155724; background-color: #d4edda; border-left: 4px solid #28a745; padding: 8px 12px; border-radius: 4px; }
+        .log-error { color: #721c24; background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 8px 12px; border-radius: 4px; font-family: monospace; }
+        .log-item { font-family: monospace; font-size: 12px; margin: 4px 0; color: #4b5563; }
+        .btn-copy { padding: 4px 10px; font-size: 12px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-copy:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>JSON Spacing Gap Formatter (/4)</h1>
+        <p>Tự động tìm kiếm các thuộc tính gap của desktop/mobile, chia giá trị cho 4 và sinh ra cấu trúc JSON mới.</p>
+    </header>
+
+    <div class="actions">
+        <button onclick="transformJSON()">🚀 Thực Thi & Chia 4</button>
+    </div>
+
+    <div class="workspace">
+        <div class="panel">
+            <div class="panel-title">Dữ liệu JSON Gốc (Input)</div>
+            <textarea id="jsonInput" placeholder='Dán JSON vào đây...&#10;Ví dụ:&#10;{&#10;  "spacing.slot.gap.desktop": 12,&#10;  "spacing.slot.gap.mobile": 8&#10;}'></textarea>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">
+                <span>Kết Quả Mới (Output)</span>
+                <button class="btn-copy" onclick="copyToClipboard()">Sao chép</button>
+            </div>
+            <textarea id="jsonOutput" readonly placeholder="Kết quả JSON sau khi xử lý sẽ xuất hiện ở đây..."></textarea>
+        </div>
+    </div>
+
+    <div id="logPanel">
+        <div id="logContent"></div>
+    </div>
+</div>
+
+<script>
+    let modifiedCount = 0;
+    let logDetails = [];
+
+    // Hàm đệ quy duyệt qua Object và biến đổi giá trị, trả về Object mới sạch sẽ
+    function transformObject(obj, path = '') {
+        if (typeof obj !== 'object' || obj === null) return obj;
+
+        // Nếu là Array (mảng), xử lý từng phần tử trong Array đó
+        if (Array.isArray(obj)) {
+            return obj.map((item, index) => transformObject(item, `${path}[${index}]`));
+        }
+
+        let newObj = {};
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                let currentPath = path ? `${path}.${key}` : key;
+                let val = obj[key];
+
+                if (key === 'spacing.slot.gap.desktop' || key === 'spacing.slot.gap.mobile') {
+                    if (typeof val === 'number') {
+                        let newVal = val / 4;
+                        newObj[key] = newVal;
+                        modifiedCount++;
+                        logDetails.push(`<div class="log-item">🔹 Đã đổi: <b>${currentPath}</b> (${val} ➔ <b>${newVal}</b>)</div>`);
+                    } else {
+                        newObj[key] = val; // Không phải số thì giữ nguyên
+                    }
+                } else if (typeof val === 'object' && val !== null) {
+                    // Nếu là một cụm object con lồng nhau, tiếp tục đào sâu đệ quy
+                    newObj[key] = transformObject(val, currentPath);
+                } else {
+                    // Các key khác giữ nguyên hoàn toàn dữ liệu ban đầu
+                    newObj[key] = val;
+                }
+            }
+        }
+        return newObj;
+    }
+
+    function transformJSON() {
+        const inputRaw = document.getElementById('jsonInput').value.trim();
+        const outputTextArea = document.getElementById('jsonOutput');
+        const logPanel = document.getElementById('logPanel');
+        const logContent = document.getElementById('logContent');
+
+        // Reset bộ đếm và log
+        modifiedCount = 0;
+        logDetails = [];
+        outputTextArea.value = '';
+        logPanel.style.display = 'none';
+
+        if (!inputRaw) {
+            alert('Vui lòng nhập hoặc dán chuỗi JSON vào ô bên trái!');
+            return;
+        }
+
+        try {
+            // Parse chuỗi thành Object
+            const parsedJson = JSON.parse(inputRaw);
+
+            // Chạy bộ lọc đệ quy
+            const transformedJson = transformObject(parsedJson);
+
+            // Đưa kết quả ra ô bên phải (giữ khoảng cách thụt đầu dòng 2 spaces cho đẹp)
+            outputTextArea.value = JSON.stringify(transformedJson, null, 2);
+
+            // In log thông báo số lượng đã đổi
+            logPanel.style.display = 'block';
+            let successHtml = `<div class="log-success"><b>Thành công!</b> Đã xử lý xong file JSON. Đã tìm thấy và chia cho 4 tại <b>${modifiedCount}</b> vị trí.</div>`;
+            if (logDetails.length > 0) {
+                successHtml += `<div style="margin-top: 10px; max-height: 150px; overflow-y: auto;">` + logDetails.join('') + `</div>`;
+            }
+            logContent.innerHTML = successHtml;
+
+        } catch (e) {
+            // Báo lỗi nếu cấu trúc chuỗi JSON paste vào bị sai (thiếu dấu ngoặc, phẩy...)
+            logPanel.style.display = 'block';
+            logContent.innerHTML = `<div class="log-error"><b>Lỗi định dạng JSON:</b> Chuỗi paste vào không hợp lệ.<br>Chi tiết: ${e.message}</div>`;
+        }
+    }
+
+    function copyToClipboard() {
+        const outputTextArea = document.getElementById('jsonOutput');
+        if (!outputTextArea.value) {
+            alert('Chưa có kết quả để sao chép!');
+            return;
+        }
+        outputTextArea.select();
+        document.execCommand('copy');
+        alert('Đã sao chép JSON mới thành công!');
+    }
+</script>
+
+</body>
+</html>
