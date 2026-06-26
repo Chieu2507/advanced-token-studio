@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surface Muted Fallback Checker</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-end;
+            margin-bottom: 18px;
+        }
+        h1 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            line-height: 1.2;
+        }
+        p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 18px 0;
+        }
+        button {
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #ffffff;
+            background: #2563eb;
+        }
+        button:hover { background: #1d4ed8; }
+        .secondary {
+            background: #ffffff;
+            color: #172033;
+            border-color: #cbd5e1;
+        }
+        .secondary:hover { background: #f8fafc; }
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 18px;
+        }
+        .panel {
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+        }
+        .panel-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        textarea {
+            width: 100%;
+            min-height: 560px;
+            resize: vertical;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #fbfdff;
+            color: #0f172a;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+        }
+        .log {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #334155;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            max-height: 260px;
+            overflow: auto;
+        }
+        .ok { color: #047857; }
+        .error { color: #b91c1c; }
+        @media (max-width: 900px) {
+            header { display: block; }
+            .workspace { grid-template-columns: 1fr; }
+            .container { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Surface Muted Fallback Checker</h1>
+                <p>Kiểm tra token <b>surfaces.muted</b> còn thiếu và bổ sung từ light surface.</p>
+            </div>
+            <button id="loadExactlyBtn" class="secondary">Nạp exactly.json</button>
+        </header>
+
+        <div class="actions">
+            <button id="fillMutedBtn">Bổ sung muted từ light</button>
+            <button id="copyOutputBtn" class="secondary">Sao chép output</button>
+            <button id="clearBtn" class="secondary">Xóa</button>
+        </div>
+
+        <div class="workspace">
+            <section class="panel">
+                <div class="panel-title">Input JSON</div>
+                <textarea id="jsonInput" spellcheck="false" placeholder="Dán exactly.json vào đây hoặc bấm Nạp exactly.json..."></textarea>
+            </section>
+
+            <section class="panel">
+                <div class="panel-title">Output JSON</div>
+                <textarea id="jsonOutput" spellcheck="false" readonly placeholder="JSON sau khi bổ sung sẽ xuất hiện ở đây..."></textarea>
+            </section>
+        </div>
+
+        <div id="log" class="log">Sẵn sàng.</div>
+    </div>
+
+    <script>
+        const inputEl = document.getElementById('jsonInput');
+        const outputEl = document.getElementById('jsonOutput');
+        const logEl = document.getElementById('log');
+
+        function setLog(message, type = '') {
+            logEl.className = type ? `log ${type}` : 'log';
+            logEl.textContent = message;
+        }
+
+        function isPlainObject(value) {
+            return value && typeof value === 'object' && !Array.isArray(value);
+        }
+
+        function eachPalette(theme, callback) {
+            const personalities = theme && theme.personalities;
+            if (!isPlainObject(personalities)) return;
+
+            Object.entries(personalities).forEach(([personalityKey, personality]) => {
+                const palettes = personality && personality.palette;
+                if (!isPlainObject(palettes)) return;
+
+                Object.entries(palettes).forEach(([paletteKey, palette]) => {
+                    if (isPlainObject(palette)) {
+                        callback(palette, `${personalityKey}.${paletteKey}`);
+                    }
+                });
+            });
+        }
+
+        function mutedKeyToLightFallbacks(mutedKey) {
+            const tokenPath = mutedKey.replace(/^surfaces\.muted\./, '');
+            return [
+                `surfaces.light.${tokenPath}`,
+                tokenPath
+            ];
+        }
+
+        function getExpectedMutedKeys(palette) {
+            const expected = new Set();
+
+            Object.keys(palette).forEach((key) => {
+                const match = key.match(/^surfaces\.(dark|accent|light)\.(.+)$/);
+                if (match) {
+                    expected.add(`surfaces.muted.${match[2]}`);
+                }
+            });
+
+            return Array.from(expected).sort();
+        }
+
+        function fillMutedFromLight(theme) {
+            let addedCount = 0;
+            let noLightValueCount = 0;
+            const detailLines = [];
+
+            eachPalette(theme, (palette, palettePath) => {
+                getExpectedMutedKeys(palette).forEach((mutedKey) => {
+                    if (Object.prototype.hasOwnProperty.call(palette, mutedKey)) return;
+
+                    const fallbackKey = mutedKeyToLightFallbacks(mutedKey).find((key) => (
+                        Object.prototype.hasOwnProperty.call(palette, key)
+                    ));
+
+                    if (!fallbackKey) {
+                        noLightValueCount++;
+                        detailLines.push(`MISS  ${palettePath} :: ${mutedKey} (không có light/base fallback)`);
+                        return;
+                    }
+
+                    palette[mutedKey] = palette[fallbackKey];
+                    addedCount++;
+                    detailLines.push(`ADD   ${palettePath} :: ${mutedKey} <- ${fallbackKey} = ${palette[fallbackKey]}`);
+                });
+            });
+
+            return { addedCount, noLightValueCount, detailLines };
+        }
+
+        document.getElementById('loadExactlyBtn').addEventListener('click', async () => {
+            try {
+                setLog('Đang nạp exactly.json...');
+                const response = await fetch('exactly.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                inputEl.value = JSON.stringify(await response.json(), null, 2);
+                setLog('Đã nạp exactly.json. Bấm "Bổ sung muted từ light" để xử lý.', 'ok');
+            } catch (error) {
+                setLog(`Không nạp được exactly.json: ${error.message}. Nếu mở file trực tiếp bị chặn fetch, hãy dán JSON vào ô Input.`, 'error');
+            }
+        });
+
+        document.getElementById('fillMutedBtn').addEventListener('click', () => {
+            try {
+                const rawText = inputEl.value.trim();
+                if (!rawText) {
+                    setLog('Input đang trống.', 'error');
+                    return;
+                }
+
+                const theme = JSON.parse(rawText);
+                const result = fillMutedFromLight(theme);
+                outputEl.value = JSON.stringify(theme, null, 2);
+
+                const preview = result.detailLines.slice(0, 220).join('\n');
+                const hiddenCount = Math.max(result.detailLines.length - 220, 0);
+                setLog(
+                    `Hoàn tất.\nĐã bổ sung: ${result.addedCount}\nKhông tìm thấy light/base fallback: ${result.noLightValueCount}\n\n${preview}${hiddenCount ? `\n... còn ${hiddenCount} dòng log nữa` : ''}`,
+                    result.noLightValueCount ? '' : 'ok'
+                );
+            } catch (error) {
+                setLog(`JSON không hợp lệ hoặc xử lý lỗi: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('copyOutputBtn').addEventListener('click', async () => {
+            if (!outputEl.value.trim()) {
+                setLog('Chưa có output để sao chép.', 'error');
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(outputEl.value);
+                setLog('Đã sao chép output JSON.', 'ok');
+            } catch (error) {
+                outputEl.select();
+                document.execCommand('copy');
+                setLog('Đã sao chép output JSON.', 'ok');
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            inputEl.value = '';
+            outputEl.value = '';
+            setLog('Sẵn sàng.');
+        });
+    </script>
+</body>
+</html>
