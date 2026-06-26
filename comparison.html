@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Schema Normalizer</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 28px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+        h1 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            line-height: 1.2;
+        }
+        p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0;
+        }
+        button {
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #ffffff;
+            background: #2563eb;
+        }
+        button:hover { background: #1d4ed8; }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .secondary {
+            background: #ffffff;
+            color: #172033;
+            border-color: #cbd5e1;
+        }
+        .secondary:hover { background: #f8fafc; }
+        .danger {
+            background: #be123c;
+        }
+        .danger:hover { background: #9f1239; }
+        .option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 38px;
+            padding: 0 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .option input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 18px;
+        }
+        .output-row {
+            margin-top: 18px;
+        }
+        .panel {
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+            min-width: 0;
+        }
+        .panel-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        .meta {
+            color: #64748b;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        textarea {
+            width: 100%;
+            min-height: 430px;
+            resize: vertical;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #fbfdff;
+            color: #0f172a;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        #jsonOutput {
+            min-height: 520px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+        }
+        .log {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #334155;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow: auto;
+        }
+        .ok { color: #047857; }
+        .error { color: #b91c1c; }
+        @media (max-width: 980px) {
+            header { display: block; }
+            .workspace { grid-template-columns: 1fr; }
+            .container { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>JSON Schema Normalizer</h1>
+                <p>Chuẩn hóa file raw theo cấu trúc, thứ tự key và schema của file exactly.</p>
+            </div>
+            <button id="loadFilesBtn" class="secondary">Nạp exactly.json và example.json</button>
+        </header>
+
+        <div class="actions">
+            <button id="normalizeBtn">Chuẩn hóa example theo exactly</button>
+            <button id="copyOutputBtn" class="secondary">Sao chép output</button>
+            <button id="clearBtn" class="danger">Xóa</button>
+            <label class="option">
+                <input id="keepExtraKeys" type="checkbox">
+                Giữ extra keys
+            </label>
+            <label class="option">
+                <input id="applyGoogleFonts" type="checkbox" checked>
+                Gợi ý Google Fonts theo personality
+            </label>
+            <label class="option">
+                <input id="fixSurfaceContrast" type="checkbox" checked>
+                Tự sửa contrast surface
+            </label>
+        </div>
+
+        <div class="workspace">
+            <section class="panel">
+                <div class="panel-title">
+                    <span>Schema chuẩn: exactly.json</span>
+                    <span id="schemaMeta" class="meta">chưa nạp</span>
+                </div>
+                <textarea id="schemaInput" spellcheck="false" placeholder="Dán exactly.json vào đây..."></textarea>
+            </section>
+
+            <section class="panel">
+                <div class="panel-title">
+                    <span>File thô: example.json</span>
+                    <span id="rawMeta" class="meta">chưa nạp</span>
+                </div>
+                <textarea id="rawInput" spellcheck="false" placeholder="Dán example.json thô vào đây..."></textarea>
+            </section>
+        </div>
+
+        <section class="panel output-row">
+            <div class="panel-title">
+                <span>Output đã chuẩn hóa</span>
+                <span id="outputMeta" class="meta">chưa xử lý</span>
+            </div>
+            <textarea id="jsonOutput" spellcheck="false" readonly placeholder="JSON sau khi chuẩn hóa sẽ xuất hiện ở đây..."></textarea>
+        </section>
+
+        <div id="log" class="log">Sẵn sàng.</div>
+    </div>
+
+    <script>
+        const schemaInput = document.getElementById('schemaInput');
+        const rawInput = document.getElementById('rawInput');
+        const outputEl = document.getElementById('jsonOutput');
+        const logEl = document.getElementById('log');
+        const schemaMeta = document.getElementById('schemaMeta');
+        const rawMeta = document.getElementById('rawMeta');
+        const outputMeta = document.getElementById('outputMeta');
+        const divideByFourKeys = new Set([
+            'spacing.slot.gap.desktop',
+            'spacing.slot.gap.mobile',
+            'spacing.section.paddingY.desktop',
+            'spacing.section.paddingY.mobile',
+            'cards.featured.padding',
+            'cards.product.padding',
+            'cards.pricing.padding',
+            'cards.cta.padding',
+            'cards.media.padding'
+        ]);
+
+        function setLog(message, type = '') {
+            logEl.className = type ? `log ${type}` : 'log';
+            logEl.textContent = message;
+        }
+
+        function isPlainObject(value) {
+            return value && typeof value === 'object' && !Array.isArray(value);
+        }
+
+        function isNumericString(value) {
+            return typeof value === 'string' && value.trim() !== '' && !Number.isNaN(Number(value));
+        }
+
+        function getDivideByFourKey(path) {
+            for (const key of divideByFourKeys) {
+                if (path === key || path.endsWith(`.${key}`)) return key;
+            }
+            return null;
+        }
+
+        function divideByFourIfNeeded(value, path, stats) {
+            const matchedKey = getDivideByFourKey(path);
+            if (!matchedKey) return value;
+
+            if (typeof value === 'number' || isNumericString(value)) {
+                const divisor = matchedKey.startsWith('spacing.section.paddingY.') ? 6 : 4;
+                const scaledValue = Number(value) / divisor;
+                const newValue = matchedKey.startsWith('spacing.section.paddingY.') ? Math.round(scaledValue) : scaledValue;
+                stats.divided.push(`${path}: ${JSON.stringify(value)} -> ${newValue}`);
+                return newValue;
+            }
+
+            stats.divideSkipped.push(`${path}: ${JSON.stringify(value)}`);
+            return value;
+        }
+
+        function summarizeTheme(theme) {
+            const personalities = isPlainObject(theme.personalities) ? Object.keys(theme.personalities) : [];
+            let paletteCount = 0;
+
+            personalities.forEach((personalityKey) => {
+                const palettes = theme.personalities[personalityKey] && theme.personalities[personalityKey].palette;
+                if (!isPlainObject(palettes)) return;
+
+                Object.entries(palettes).forEach(([paletteKey, paletteValue]) => {
+                    if (!paletteKey.startsWith('_') && isPlainObject(paletteValue)) {
+                        paletteCount++;
+                    }
+                });
+            });
+
+            return `${theme.id || 'no-id'} | ${personalities.length} personalities | ${paletteCount} palettes`;
+        }
+
+        function parseHexColor(value) {
+            if (typeof value !== 'string') return null;
+            const trimmed = value.trim();
+            const match = trimmed.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+            if (!match) return null;
+
+            let hex = match[1];
+            if (hex.length === 3) {
+                hex = hex.split('').map((char) => char + char).join('');
+            }
+
+            return {
+                r: parseInt(hex.slice(0, 2), 16),
+                g: parseInt(hex.slice(2, 4), 16),
+                b: parseInt(hex.slice(4, 6), 16)
+            };
+        }
+
+        function relativeLuminance(color) {
+            const toLinear = (channel) => {
+                const value = channel / 255;
+                return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+            };
+
+            return 0.2126 * toLinear(color.r) + 0.7152 * toLinear(color.g) + 0.0722 * toLinear(color.b);
+        }
+
+        function contrastRatio(colorA, colorB) {
+            const parsedA = parseHexColor(colorA);
+            const parsedB = parseHexColor(colorB);
+            if (!parsedA || !parsedB) return null;
+
+            const lumA = relativeLuminance(parsedA);
+            const lumB = relativeLuminance(parsedB);
+            const lighter = Math.max(lumA, lumB);
+            const darker = Math.min(lumA, lumB);
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        function getReadableFallback(background) {
+            const blackRatio = contrastRatio('#111111', background) || 0;
+            const whiteRatio = contrastRatio('#ffffff', background) || 0;
+            return blackRatio >= whiteRatio ? '#111111' : '#ffffff';
+        }
+
+        function uniqueHexCandidates(values) {
+            const seen = new Set();
+            return values.filter((value) => {
+                if (!parseHexColor(value)) return false;
+                const key = value.toLowerCase();
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+        }
+
+        function chooseReadableColor(currentColor, background, candidates, threshold) {
+            const currentRatio = contrastRatio(currentColor, background);
+            if (currentRatio !== null && currentRatio >= threshold) {
+                return { color: currentColor, ratio: currentRatio, changed: false };
+            }
+
+            const readableCandidates = uniqueHexCandidates([
+                currentColor,
+                ...candidates,
+                getReadableFallback(background),
+                '#111111',
+                '#ffffff'
+            ]);
+
+            let best = null;
+            readableCandidates.forEach((candidate) => {
+                const ratio = contrastRatio(candidate, background);
+                if (ratio === null) return;
+                if (!best || ratio > best.ratio) {
+                    best = { color: candidate, ratio };
+                }
+            });
+
+            if (!best) return { color: currentColor, ratio: currentRatio, changed: false };
+            return { color: best.color, ratio: best.ratio, changed: best.color !== currentColor };
+        }
+
+        function surfaceTextCandidates(palette, surface) {
+            return [
+                palette[`surfaces.${surface}.color.headingText`],
+                palette[`surfaces.${surface}.color.bodyText`],
+                palette[`surfaces.${surface}.color.accent`],
+                palette[`surfaces.${surface}.form.input.color`],
+                palette[`surfaces.${surface}.form.select.color`],
+                palette[`surfaces.${surface}.form.textarea.color`],
+                palette['color.headingText'],
+                palette['color.bodyText'],
+                palette['color.accent'],
+                palette['form.input.color'],
+                palette['form.select.color'],
+                palette['form.textarea.color'],
+                palette['color.primaryButton.label'],
+                palette['color.secondaryButton.label']
+            ];
+        }
+
+        function fixColorAgainstBackground(palette, key, background, candidates, threshold, stats, contextPath) {
+            if (!Object.prototype.hasOwnProperty.call(palette, key)) return;
+            if (!parseHexColor(background) || !parseHexColor(palette[key])) return;
+
+            const before = palette[key];
+            const beforeRatio = contrastRatio(before, background);
+            const result = chooseReadableColor(before, background, candidates, threshold);
+            if (!result.changed) return;
+
+            palette[key] = result.color;
+            stats.contrastFixes.push(
+                `${contextPath}.${key}: ${before} on ${background} (${beforeRatio ? beforeRatio.toFixed(2) : 'n/a'}) -> ${result.color} (${result.ratio.toFixed(2)})`
+            );
+        }
+
+        function fixPaletteContrast(palette, contextPath, stats) {
+            const baseCandidates = [
+                palette['color.headingText'],
+                palette['color.bodyText'],
+                palette['color.accent'],
+                palette['form.input.color'],
+                palette['form.select.color'],
+                palette['form.textarea.color'],
+                palette['color.primaryButton.label'],
+                palette['color.secondaryButton.label']
+            ];
+
+            ['input', 'select', 'textarea'].forEach((control) => {
+                const controlBg = palette[`form.${control}.background`] || palette['color.background'];
+                fixColorAgainstBackground(
+                    palette,
+                    `form.${control}.color`,
+                    controlBg,
+                    baseCandidates,
+                    4.5,
+                    stats,
+                    contextPath
+                );
+            });
+
+            [
+                ['color.saleBadge.text', 'color.saleBadge.background'],
+                ['color.soldOutBadge.text', 'color.soldOutBadge.background']
+            ].forEach(([textKey, bgKey]) => {
+                fixColorAgainstBackground(
+                    palette,
+                    textKey,
+                    palette[bgKey],
+                    baseCandidates,
+                    4.5,
+                    stats,
+                    contextPath
+                );
+            });
+
+            ['muted', 'dark', 'accent', 'light'].forEach((surface) => {
+                const surfaceBg = palette[`surfaces.${surface}.color.background`];
+                if (!parseHexColor(surfaceBg)) return;
+
+                const textCandidates = surfaceTextCandidates(palette, surface);
+                [
+                    `surfaces.${surface}.color.headingText`,
+                    `surfaces.${surface}.color.bodyText`,
+                    `surfaces.${surface}.color.secondaryButton.label`,
+                    `surfaces.${surface}.color.tertiaryButton.label`
+                ].forEach((key) => {
+                    fixColorAgainstBackground(palette, key, surfaceBg, textCandidates, 4.5, stats, contextPath);
+                });
+
+                fixColorAgainstBackground(
+                    palette,
+                    `surfaces.${surface}.color.accent`,
+                    surfaceBg,
+                    textCandidates,
+                    3,
+                    stats,
+                    contextPath
+                );
+
+                const primaryBg = palette[`surfaces.${surface}.color.primaryButton.background`];
+                fixColorAgainstBackground(
+                    palette,
+                    `surfaces.${surface}.color.primaryButton.label`,
+                    parseHexColor(primaryBg) ? primaryBg : surfaceBg,
+                    textCandidates,
+                    4.5,
+                    stats,
+                    contextPath
+                );
+
+                const secondaryBg = palette[`surfaces.${surface}.color.secondaryButton.background`];
+                fixColorAgainstBackground(
+                    palette,
+                    `surfaces.${surface}.color.secondaryButton.label`,
+                    parseHexColor(secondaryBg) ? secondaryBg : surfaceBg,
+                    textCandidates,
+                    4.5,
+                    stats,
+                    contextPath
+                );
+
+                ['input', 'select', 'textarea'].forEach((control) => {
+                    const controlBg = palette[`surfaces.${surface}.form.${control}.background`];
+                    fixColorAgainstBackground(
+                        palette,
+                        `surfaces.${surface}.form.${control}.color`,
+                        parseHexColor(controlBg) ? controlBg : surfaceBg,
+                        textCandidates,
+                        4.5,
+                        stats,
+                        contextPath
+                    );
+                });
+            });
+        }
+
+        function fixSurfaceContrastInTheme(theme, stats) {
+            if (!isPlainObject(theme.personalities)) return;
+
+            Object.entries(theme.personalities).forEach(([personalityKey, personality]) => {
+                if (!isPlainObject(personality) || !isPlainObject(personality.palette)) return;
+
+                Object.entries(personality.palette).forEach(([paletteKey, palette]) => {
+                    if (paletteKey.startsWith('_') || !isPlainObject(palette)) return;
+                    fixPaletteContrast(palette, `personalities.${personalityKey}.palette.${paletteKey}`, stats);
+                });
+            });
+        }
+
+        function enforceBadgePadding(value, path, stats) {
+            if (!isPlainObject(value)) return;
+
+            Object.entries(value).forEach(([key, childValue]) => {
+                const childPath = path ? `${path}.${key}` : key;
+                if (key === 'badge.default.padding' && childValue !== 12) {
+                    stats.defaultFixes.push(`${childPath}: ${JSON.stringify(childValue)} -> 12`);
+                    value[key] = 12;
+                    return;
+                }
+
+                if (isPlainObject(childValue) || Array.isArray(childValue)) {
+                    enforceBadgePadding(childValue, childPath, stats);
+                }
+            });
+        }
+
+        function updateMeta() {
+            try {
+                const schema = JSON.parse(schemaInput.value);
+                schemaMeta.textContent = summarizeTheme(schema);
+            } catch {
+                schemaMeta.textContent = schemaInput.value.trim() ? 'JSON lỗi' : 'chưa nạp';
+            }
+
+            try {
+                const raw = JSON.parse(rawInput.value);
+                rawMeta.textContent = summarizeTheme(raw);
+            } catch {
+                rawMeta.textContent = rawInput.value.trim() ? 'JSON lỗi' : 'chưa nạp';
+            }
+        }
+
+        function getFirstTemplateObject(source) {
+            if (!isPlainObject(source)) return undefined;
+            const entry = Object.entries(source).find(([key, value]) => (
+                !key.startsWith('_') && isPlainObject(value)
+            ));
+            return entry ? entry[1] : undefined;
+        }
+
+        function isDynamicDictionaryPath(path) {
+            return path === 'personalities' || /\.(palette|typeface|typeWeight|density|silhouette)$/.test(path);
+        }
+
+        function normalizeDynamicDictionary(schemaValue, rawValue, path, stats, keepExtraKeys) {
+            if (!isPlainObject(rawValue)) {
+                stats.missing.push(path);
+                return structuredClone(schemaValue);
+            }
+
+            const normalized = {};
+            const fallbackTemplate = getFirstTemplateObject(schemaValue);
+
+            Object.keys(schemaValue).forEach((key) => {
+                if (!key.startsWith('_')) return;
+                const childPath = path ? `${path}.${key}` : key;
+                normalized[key] = normalizeBySchema(schemaValue[key], rawValue[key], childPath, stats, keepExtraKeys);
+            });
+
+            Object.entries(rawValue).forEach(([key, value]) => {
+                if (key.startsWith('_')) {
+                    if (!Object.prototype.hasOwnProperty.call(normalized, key)) {
+                        normalized[key] = value;
+                        stats.used++;
+                    }
+                    return;
+                }
+
+                const childPath = path ? `${path}.${key}` : key;
+                const template = isPlainObject(schemaValue[key]) ? schemaValue[key] : fallbackTemplate;
+                if (!template) {
+                    stats.extra.push(childPath);
+                    if (keepExtraKeys) normalized[key] = value;
+                    return;
+                }
+
+                normalized[key] = normalizeBySchema(template, value, childPath, stats, keepExtraKeys);
+            });
+
+            return normalized;
+        }
+
+        function normalizeBySchema(schemaValue, rawValue, path, stats, keepExtraKeys) {
+            if (Array.isArray(schemaValue)) {
+                if (!Array.isArray(rawValue)) {
+                    stats.missing.push(path);
+                    return structuredClone(schemaValue);
+                }
+
+                return rawValue.map((item, index) => {
+                    const templateItem = schemaValue[index] !== undefined ? schemaValue[index] : schemaValue[0];
+                    if (templateItem === undefined) return item;
+                    return normalizeBySchema(templateItem, item, `${path}[${index}]`, stats, keepExtraKeys);
+                });
+            }
+
+            if (!isPlainObject(schemaValue)) {
+                if (rawValue === undefined) {
+                    stats.missing.push(path);
+                    return divideByFourIfNeeded(schemaValue, path, stats);
+                }
+
+                stats.used++;
+                return divideByFourIfNeeded(rawValue, path, stats);
+            }
+
+            if (!isPlainObject(rawValue)) {
+                stats.missing.push(path);
+                return structuredClone(schemaValue);
+            }
+
+            if (isDynamicDictionaryPath(path)) {
+                return normalizeDynamicDictionary(schemaValue, rawValue, path, stats, keepExtraKeys);
+            }
+
+            const normalized = {};
+            Object.keys(schemaValue).forEach((key) => {
+                const childPath = path ? `${path}.${key}` : key;
+                normalized[key] = normalizeBySchema(
+                    schemaValue[key],
+                    rawValue[key],
+                    childPath,
+                    stats,
+                    keepExtraKeys
+                );
+            });
+
+            Object.keys(rawValue).forEach((key) => {
+                if (Object.prototype.hasOwnProperty.call(schemaValue, key)) return;
+
+                const childPath = path ? `${path}.${key}` : key;
+                stats.extra.push(childPath);
+                if (keepExtraKeys) normalized[key] = rawValue[key];
+            });
+
+            return normalized;
+        }
+
+        function normalizeTheme(schema, raw, keepExtraKeys) {
+            const stats = {
+                used: 0,
+                missing: [],
+                extra: [],
+                fontChanges: [],
+                divided: [],
+                divideSkipped: [],
+                contrastFixes: [],
+                defaultFixes: []
+            };
+            const normalized = normalizeBySchema(schema, raw, '', stats, keepExtraKeys);
+            return { normalized, stats };
+        }
+
+        const GOOGLE_FONT_PRESETS = [
+            {
+                keywords: ['hand', 'lettered', 'handlettered', 'script'],
+                heading: 'Caveat',
+                body: 'Source Serif 4'
+            },
+            {
+                keywords: ['pottery', 'ceramic', 'coffee', 'bakery', 'chocolate', 'confection', 'pantry', 'leather', 'wood', 'textile', 'fiber', 'craft', 'artisan', 'stationer'],
+                heading: 'Cormorant Garamond',
+                body: 'Source Serif 4'
+            },
+            {
+                keywords: ['display', 'elegant', 'romantic', 'heritage'],
+                heading: 'Cormorant Garamond',
+                body: 'Source Serif 4'
+            },
+            {
+                keywords: ['fashion', 'luxury', 'luxe', 'didot', 'bodoni', 'classical'],
+                heading: 'Bodoni Moda',
+                body: 'Libre Caslon Text'
+            },
+            {
+                keywords: ['neo', 'grotesk', 'swiss', 'modernist', 'sans', 'minimal'],
+                heading: 'IBM Plex Sans',
+                body: 'IBM Plex Sans'
+            },
+            {
+                keywords: ['indie', 'literary', 'warm', 'magazine', 'reader'],
+                heading: 'Newsreader',
+                body: 'Source Serif 4'
+            },
+            {
+                keywords: ['rustic', 'organic', 'natural', 'farm', 'provision'],
+                heading: 'Fraunces',
+                body: 'Literata'
+            },
+            {
+                keywords: ['academic', 'journal', 'curatorial', 'classical', 'review'],
+                heading: 'Crimson Pro',
+                body: 'Crimson Pro'
+            },
+            {
+                keywords: ['gallery', 'museum', 'art', 'monograph', 'print'],
+                heading: 'Cormorant Garamond',
+                body: 'Source Serif 4'
+            },
+            {
+                keywords: ['cultural', 'digest', 'journalism', 'mainstream', 'digital'],
+                heading: 'Fraunces',
+                body: 'Source Serif 4'
+            }
+        ];
+
+        const DEFAULT_GOOGLE_FONT_PRESET = {
+            heading: 'Cormorant Garamond',
+            body: 'Source Serif 4'
+        };
+
+        function getContextText(parts) {
+            return parts
+                .filter(Boolean)
+                .join(' ')
+                .replace(/([a-z])([A-Z])/g, '$1 $2')
+                .toLowerCase();
+        }
+
+        function chooseGoogleFontPreset(contextText) {
+            let bestPreset = DEFAULT_GOOGLE_FONT_PRESET;
+            let bestScore = 0;
+
+            GOOGLE_FONT_PRESETS.forEach((preset) => {
+                const score = preset.keywords.reduce((total, keyword) => (
+                    contextText.includes(keyword) ? total + 1 : total
+                ), 0);
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestPreset = preset;
+                }
+            });
+
+            return bestPreset;
+        }
+
+        function applyGoogleFontsByPersonality(theme, stats) {
+            if (!isPlainObject(theme.personalities)) return;
+
+            Object.entries(theme.personalities).forEach(([personalityKey, personality]) => {
+                if (!isPlainObject(personality) || !isPlainObject(personality.typeface)) return;
+
+                Object.entries(personality.typeface).forEach(([typefaceKey, typeface]) => {
+                    if (typefaceKey.startsWith('_') || !isPlainObject(typeface)) return;
+
+                    const contextText = getContextText([
+                        personalityKey,
+                        personality._label,
+                        personality._description,
+                        typefaceKey,
+                        typeface._label,
+                        typeface._description
+                    ]);
+                    const preset = chooseGoogleFontPreset(contextText);
+                    const fontAssignments = {
+                        'typography.h1.fontFamily': preset.heading,
+                        'typography.h2.fontFamily': preset.heading,
+                        'typography.h3.fontFamily': preset.heading,
+                        'typography.h4.fontFamily': preset.heading,
+                        'typography.h5.fontFamily': preset.heading,
+                        'typography.p1.fontFamily': preset.body,
+                        'typography.p2.fontFamily': preset.body,
+                        'typography.p3.fontFamily': preset.body,
+                        'typography.eyebrow.fontFamily': preset.body
+                    };
+
+                    Object.entries(fontAssignments).forEach(([key, value]) => {
+                        if (!Object.prototype.hasOwnProperty.call(typeface, key)) return;
+                        if (typeface[key] === value) return;
+
+                        stats.fontChanges.push(
+                            `${personalityKey}.typeface.${typefaceKey}.${key}: ${typeface[key]} -> ${value}`
+                        );
+                        typeface[key] = value;
+                    });
+                });
+            });
+        }
+
+        async function loadJsonFile(filename) {
+            const response = await fetch(filename);
+            if (!response.ok) throw new Error(`${filename}: HTTP ${response.status}`);
+            return response.json();
+        }
+
+        document.getElementById('loadFilesBtn').addEventListener('click', async () => {
+            try {
+                setLog('Đang nạp exactly.json và example.json...');
+                const [schema, raw] = await Promise.all([
+                    loadJsonFile('exactly.json'),
+                    loadJsonFile('example.json')
+                ]);
+
+                schemaInput.value = JSON.stringify(schema, null, 2);
+                rawInput.value = JSON.stringify(raw, null, 2);
+                updateMeta();
+                setLog('Đã nạp xong. Bấm "Chuẩn hóa example theo exactly" để xử lý.', 'ok');
+            } catch (error) {
+                setLog(`Không nạp được file: ${error.message}. Nếu mở HTML trực tiếp bị chặn fetch, hãy dán JSON thủ công vào hai ô.`, 'error');
+            }
+        });
+
+        document.getElementById('normalizeBtn').addEventListener('click', () => {
+            try {
+                const schemaText = schemaInput.value.trim();
+                const rawText = rawInput.value.trim();
+
+                if (!schemaText || !rawText) {
+                    setLog('Cần có cả exactly/schema và example/raw trước khi chuẩn hóa.', 'error');
+                    return;
+                }
+
+                const schema = JSON.parse(schemaText);
+                const raw = JSON.parse(rawText);
+                const keepExtraKeys = document.getElementById('keepExtraKeys').checked;
+                const applyGoogleFonts = document.getElementById('applyGoogleFonts').checked;
+                const fixSurfaceContrast = document.getElementById('fixSurfaceContrast').checked;
+                const { normalized, stats } = normalizeTheme(schema, raw, keepExtraKeys);
+
+                if (applyGoogleFonts) {
+                    applyGoogleFontsByPersonality(normalized, stats);
+                }
+
+                if (fixSurfaceContrast) {
+                    fixSurfaceContrastInTheme(normalized, stats);
+                }
+
+                enforceBadgePadding(normalized, '', stats);
+
+                outputEl.value = JSON.stringify(normalized, null, 2);
+                outputMeta.textContent = summarizeTheme(normalized);
+
+                const missingPreview = stats.missing.slice(0, 80).map((item) => `MISSING <- exactly: ${item}`).join('\n');
+                const extraPreview = stats.extra.slice(0, 80).map((item) => `${keepExtraKeys ? 'KEPT' : 'DROPPED'} extra: ${item}`).join('\n');
+                const fontPreview = stats.fontChanges.slice(0, 80).map((item) => `FONT  ${item}`).join('\n');
+                const dividedPreview = stats.divided.slice(0, 80).map((item) => `SCALE  ${item}`).join('\n');
+                const divideSkippedPreview = stats.divideSkipped.slice(0, 80).map((item) => `SKIP  ${item}`).join('\n');
+                const contrastPreview = stats.contrastFixes.slice(0, 80).map((item) => `CONTRAST  ${item}`).join('\n');
+                const defaultPreview = stats.defaultFixes.slice(0, 80).map((item) => `DEFAULT  ${item}`).join('\n');
+                const hiddenMissing = Math.max(stats.missing.length - 80, 0);
+                const hiddenExtra = Math.max(stats.extra.length - 80, 0);
+                const hiddenFonts = Math.max(stats.fontChanges.length - 80, 0);
+                const hiddenDivided = Math.max(stats.divided.length - 80, 0);
+                const hiddenDivideSkipped = Math.max(stats.divideSkipped.length - 80, 0);
+                const hiddenContrast = Math.max(stats.contrastFixes.length - 80, 0);
+                const hiddenDefault = Math.max(stats.defaultFixes.length - 80, 0);
+
+                const logParts = [
+                    'Hoàn tất.',
+                    `Value lấy từ example/raw: ${stats.used}`,
+                    `Key thiếu trong raw, đã dùng fallback từ exactly: ${stats.missing.length}`,
+                    `Extra key trong raw ${keepExtraKeys ? 'được giữ lại' : 'đã bỏ'}: ${stats.extra.length}`,
+                    `Spacing/card padding đã scale: ${stats.divided.length}`,
+                    `Spacing/card padding bỏ qua vì không phải số: ${stats.divideSkipped.length}`,
+                    `Surface contrast đã sửa: ${fixSurfaceContrast ? stats.contrastFixes.length : 'tắt'}`,
+                    `Default badge padding đã sửa: ${stats.defaultFixes.length}`,
+                    `Google Font được gợi ý/override: ${applyGoogleFonts ? stats.fontChanges.length : 'tắt'}`
+                ];
+
+                if (missingPreview) {
+                    logParts.push('', missingPreview);
+                    if (hiddenMissing) logParts.push(`... còn ${hiddenMissing} missing key nữa`);
+                }
+
+                if (extraPreview) {
+                    logParts.push('', extraPreview);
+                    if (hiddenExtra) logParts.push(`... còn ${hiddenExtra} extra key nữa`);
+                }
+
+                if (dividedPreview) {
+                    logParts.push('', dividedPreview);
+                    if (hiddenDivided) logParts.push(`... còn ${hiddenDivided} key /4 nữa`);
+                }
+
+                if (divideSkippedPreview) {
+                    logParts.push('', divideSkippedPreview);
+                    if (hiddenDivideSkipped) logParts.push(`... còn ${hiddenDivideSkipped} key bị skip nữa`);
+                }
+
+                if (contrastPreview) {
+                    logParts.push('', contrastPreview);
+                    if (hiddenContrast) logParts.push(`... còn ${hiddenContrast} contrast fix nữa`);
+                }
+
+                if (defaultPreview) {
+                    logParts.push('', defaultPreview);
+                    if (hiddenDefault) logParts.push(`... còn ${hiddenDefault} default fix nữa`);
+                }
+
+                if (fontPreview) {
+                    logParts.push('', fontPreview);
+                    if (hiddenFonts) logParts.push(`... còn ${hiddenFonts} font change nữa`);
+                }
+
+                setLog(logParts.join('\n'), 'ok');
+                updateMeta();
+            } catch (error) {
+                setLog(`Không chuẩn hóa được: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('copyOutputBtn').addEventListener('click', async () => {
+            if (!outputEl.value.trim()) {
+                setLog('Chưa có output để sao chép.', 'error');
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(outputEl.value);
+                setLog('Đã sao chép output JSON.', 'ok');
+            } catch {
+                outputEl.select();
+                document.execCommand('copy');
+                setLog('Đã sao chép output JSON.', 'ok');
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            schemaInput.value = '';
+            rawInput.value = '';
+            outputEl.value = '';
+            schemaMeta.textContent = 'chưa nạp';
+            rawMeta.textContent = 'chưa nạp';
+            outputMeta.textContent = 'chưa xử lý';
+            setLog('Sẵn sàng.');
+        });
+
+        schemaInput.addEventListener('input', updateMeta);
+        rawInput.addEventListener('input', updateMeta);
+    </script>
+</body>
+</html>
