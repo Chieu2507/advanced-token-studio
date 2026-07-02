@@ -76,6 +76,40 @@
             text-align: center;
             margin: 20px 0;
         }
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+        .format-options {
+            margin: 0 auto 20px;
+            padding: 16px 18px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .format-options h2 {
+            margin: 0 0 12px;
+            font-size: 15px;
+            color: #34495e;
+        }
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 10px 16px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #334155;
+        }
+        .option-item input {
+            margin: 0;
+        }
         button {
             padding: 12px 35px;
             background-color: #10b981;
@@ -94,6 +128,13 @@
         button:active {
             transform: scale(0.98);
         }
+        .btn-secondary {
+            background-color: #0f766e;
+            box-shadow: 0 4px 6px rgba(15, 118, 110, 0.2);
+        }
+        .btn-secondary:hover {
+            background-color: #115e59;
+        }
         #logPanel {
             margin-top: 15px;
             background: #ffffff;
@@ -106,8 +147,18 @@
         .log-success { color: #155724; background-color: #d4edda; border-left: 4px solid #28a745; padding: 8px 12px; border-radius: 4px; }
         .log-error { color: #721c24; background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 8px 12px; border-radius: 4px; font-family: monospace; }
         .log-item { font-family: monospace; font-size: 12px; margin: 4px 0; color: #4b5563; }
+        .log-warning { color: #7c2d12; background-color: #ffedd5; border-left: 4px solid #f97316; padding: 8px 12px; border-radius: 4px; }
         .btn-copy { padding: 4px 10px; font-size: 12px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn-copy:hover { background: #2563eb; }
+        .compare-panel {
+            margin-top: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -115,17 +166,62 @@
 <div class="container">
     <header>
         <h1>JSON Spacing Gap Formatter (/4)</h1>
-        <p>Tự động tìm kiếm các thuộc tính gap của desktop/mobile, chia giá trị cho 4 và sinh ra cấu trúc JSON mới.</p>
+        <p>Chọn các thuộc tính spacing hoặc card padding cần format, hệ thống sẽ tự tìm key tương ứng và chia giá trị cho 4.</p>
     </header>
 
+    <div class="format-options">
+        <h2>Chọn thuộc tính cần format (/4)</h2>
+        <div class="option-grid">
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="spacing.section.paddingY.desktop" checked>
+                <span>spacing.section.paddingY.desktop</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="spacing.section.paddingY.mobile" checked>
+                <span>spacing.section.paddingY.mobile</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="spacing.slot.gap.desktop" checked>
+                <span>spacing.slot.gap.desktop</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="spacing.slot.gap.mobile" checked>
+                <span>spacing.slot.gap.mobile</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="cards.featured.padding" checked>
+                <span>cards.featured.padding</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="cards.product.padding" checked>
+                <span>cards.product.padding</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="cards.pricing.padding" checked>
+                <span>cards.pricing.padding</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="cards.cta.padding" checked>
+                <span>cards.cta.padding</span>
+            </label>
+            <label class="option-item">
+                <input type="checkbox" class="format-option" value="cards.media.padding" checked>
+                <span>cards.media.padding</span>
+            </label>
+        </div>
+    </div>
+
     <div class="actions">
-        <button onclick="transformJSON()">🚀 Thực Thi & Chia 4</button>
+        <div class="action-group">
+            <button onclick="transformJSON()">🚀 Thực Thi & Chia 4</button>
+            <button class="btn-secondary" onclick="compareWithExactlyJSON()">🔍 So sánh với exactly.json</button>
+        </div>
     </div>
 
     <div class="workspace">
         <div class="panel">
             <div class="panel-title">Dữ liệu JSON Gốc (Input)</div>
-            <textarea id="jsonInput" placeholder='Dán JSON vào đây...&#10;Ví dụ:&#10;{&#10;  "spacing.slot.gap.desktop": 12,&#10;  "spacing.slot.gap.mobile": 8&#10;}'></textarea>
+            <textarea id="jsonInput" placeholder='Dán JSON vào đây...&#10;Ví dụ:&#10;{&#10;  "spacing.section.paddingY.desktop": "96",&#10;  "spacing.section.paddingY.mobile": "56",&#10;  "spacing.slot.gap.desktop": "24",&#10;  "spacing.slot.gap.mobile": "24",&#10;  "cards.featured.padding": "32",&#10;  "cards.product.padding": "32",&#10;  "cards.pricing.padding": "32",&#10;  "cards.cta.padding": "32",&#10;  "cards.media.padding": "32"&#10;}'></textarea>
         </div>
 
         <div class="panel">
@@ -140,19 +236,40 @@
     <div id="logPanel">
         <div id="logContent"></div>
     </div>
+
+    <div id="comparePanel" class="compare-panel">
+        <div id="compareContent"></div>
+    </div>
 </div>
 
 <script>
     let modifiedCount = 0;
     let logDetails = [];
+    const DIVISOR = 4;
+    let exactlyJsonCache = null;
+
+    function getSelectedKeys() {
+        return new Set(
+            Array.from(document.querySelectorAll('.format-option:checked')).map((input) => input.value)
+        );
+    }
+
+    function transformSpacingValue(val) {
+        const parsed = typeof val === 'string' ? Number(val) : val;
+        if (typeof parsed !== 'number' || Number.isNaN(parsed)) {
+            return null;
+        }
+        const divided = parsed / DIVISOR;
+        return typeof val === 'string' ? String(divided) : divided;
+    }
 
     // Hàm đệ quy duyệt qua Object và biến đổi giá trị, trả về Object mới sạch sẽ
-    function transformObject(obj, path = '') {
+    function transformObject(obj, selectedKeys, path = '') {
         if (typeof obj !== 'object' || obj === null) return obj;
 
         // Nếu là Array (mảng), xử lý từng phần tử trong Array đó
         if (Array.isArray(obj)) {
-            return obj.map((item, index) => transformObject(item, `${path}[${index}]`));
+            return obj.map((item, index) => transformObject(item, selectedKeys, `${path}[${index}]`));
         }
 
         let newObj = {};
@@ -161,18 +278,18 @@
                 let currentPath = path ? `${path}.${key}` : key;
                 let val = obj[key];
 
-                if (key === 'spacing.slot.gap.desktop' || key === 'spacing.slot.gap.mobile') {
-                    if (typeof val === 'number') {
-                        let newVal = val / 4;
+                if (selectedKeys.has(key)) {
+                    const newVal = transformSpacingValue(val);
+                    if (newVal !== null) {
                         newObj[key] = newVal;
                         modifiedCount++;
                         logDetails.push(`<div class="log-item">🔹 Đã đổi: <b>${currentPath}</b> (${val} ➔ <b>${newVal}</b>)</div>`);
                     } else {
-                        newObj[key] = val; // Không phải số thì giữ nguyên
+                        newObj[key] = val;
                     }
                 } else if (typeof val === 'object' && val !== null) {
                     // Nếu là một cụm object con lồng nhau, tiếp tục đào sâu đệ quy
-                    newObj[key] = transformObject(val, currentPath);
+                    newObj[key] = transformObject(val, selectedKeys, currentPath);
                 } else {
                     // Các key khác giữ nguyên hoàn toàn dữ liệu ban đầu
                     newObj[key] = val;
@@ -182,20 +299,72 @@
         return newObj;
     }
 
+    function flattenObject(obj, path = '', result = {}) {
+        if (Array.isArray(obj)) {
+            if (obj.length === 0 && path) {
+                result[path] = [];
+            }
+            obj.forEach((item, index) => {
+                const nextPath = `${path}[${index}]`;
+                flattenObject(item, nextPath, result);
+            });
+            return result;
+        }
+
+        if (typeof obj === 'object' && obj !== null) {
+            const keys = Object.keys(obj);
+            if (keys.length === 0 && path) {
+                result[path] = {};
+            }
+            keys.forEach((key) => {
+                const nextPath = path ? `${path}.${key}` : key;
+                flattenObject(obj[key], nextPath, result);
+            });
+            return result;
+        }
+
+        if (path) {
+            result[path] = obj;
+        }
+        return result;
+    }
+
+    async function loadExactlyJSON() {
+        if (exactlyJsonCache) {
+            return exactlyJsonCache;
+        }
+
+        const response = await fetch('./exactly.json', { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`Không đọc được exactly.json (HTTP ${response.status})`);
+        }
+
+        exactlyJsonCache = await response.json();
+        return exactlyJsonCache;
+    }
+
     function transformJSON() {
         const inputRaw = document.getElementById('jsonInput').value.trim();
         const outputTextArea = document.getElementById('jsonOutput');
         const logPanel = document.getElementById('logPanel');
         const logContent = document.getElementById('logContent');
+        const comparePanel = document.getElementById('comparePanel');
+        const selectedKeys = getSelectedKeys();
 
         // Reset bộ đếm và log
         modifiedCount = 0;
         logDetails = [];
         outputTextArea.value = '';
         logPanel.style.display = 'none';
+        comparePanel.style.display = 'none';
 
         if (!inputRaw) {
             alert('Vui lòng nhập hoặc dán chuỗi JSON vào ô bên trái!');
+            return;
+        }
+
+        if (selectedKeys.size === 0) {
+            alert('Vui lòng chọn ít nhất 1 thuộc tính cần format!');
             return;
         }
 
@@ -204,7 +373,7 @@
             const parsedJson = JSON.parse(inputRaw);
 
             // Chạy bộ lọc đệ quy
-            const transformedJson = transformObject(parsedJson);
+            const transformedJson = transformObject(parsedJson, selectedKeys);
 
             // Đưa kết quả ra ô bên phải (giữ khoảng cách thụt đầu dòng 2 spaces cho đẹp)
             outputTextArea.value = JSON.stringify(transformedJson, null, 2);
@@ -221,6 +390,51 @@
             // Báo lỗi nếu cấu trúc chuỗi JSON paste vào bị sai (thiếu dấu ngoặc, phẩy...)
             logPanel.style.display = 'block';
             logContent.innerHTML = `<div class="log-error"><b>Lỗi định dạng JSON:</b> Chuỗi paste vào không hợp lệ.<br>Chi tiết: ${e.message}</div>`;
+        }
+    }
+
+    async function compareWithExactlyJSON() {
+        const outputRaw = document.getElementById('jsonOutput').value.trim();
+        const comparePanel = document.getElementById('comparePanel');
+        const compareContent = document.getElementById('compareContent');
+
+        comparePanel.style.display = 'none';
+
+        if (!outputRaw) {
+            alert('Chưa có JSON mới để so sánh. Hãy chạy "Thực Thi & Chia 4" trước.');
+            return;
+        }
+
+        try {
+            const outputJson = JSON.parse(outputRaw);
+            const exactlyJson = await loadExactlyJSON();
+            const outputFlat = flattenObject(outputJson);
+            const exactlyFlat = flattenObject(exactlyJson);
+
+            const missingEntries = Object.keys(exactlyFlat)
+                .filter((key) => !Object.prototype.hasOwnProperty.call(outputFlat, key))
+                .sort();
+
+            comparePanel.style.display = 'block';
+
+            if (missingEntries.length === 0) {
+                compareContent.innerHTML = `<div class="log-success"><b>So sánh hoàn tất!</b> JSON mới không thiếu key nào so với <b>exactly.json</b>.</div>`;
+                return;
+            }
+
+            const missingHtml = missingEntries
+                .map((key) => `<div class="log-item">• <b>${key}</b>: ${JSON.stringify(exactlyFlat[key])}</div>`)
+                .join('');
+
+            compareContent.innerHTML = `
+                <div class="log-warning"><b>So sánh hoàn tất!</b> JSON mới đang thiếu <b>${missingEntries.length}</b> key so với <b>exactly.json</b>.</div>
+                <div style="margin-top: 10px; max-height: 240px; overflow-y: auto;">${missingHtml}</div>
+            `;
+        } catch (error) {
+            comparePanel.style.display = 'block';
+            compareContent.innerHTML = `
+                <div class="log-error"><b>Không thể so sánh với exactly.json:</b><br>Chi tiết: ${error.message}<br><br>Gợi ý: hãy mở file qua local server thay vì mở trực tiếp bằng <code>file://</code>.</div>
+            `;
         }
     }
 
